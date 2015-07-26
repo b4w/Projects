@@ -1,7 +1,14 @@
 package com.triangularlake.constantine.triangularlake.data.common;
 
-/**
- * Created by KonstantinSysoev on 29.06.15.
- */
-public class CommonDao {
+import com.j256.ormlite.dao.BaseDaoImpl;
+import com.j256.ormlite.support.ConnectionSource;
+
+import java.sql.SQLException;
+
+public class CommonDao<T, ID> extends BaseDaoImpl<T, ID> {
+
+    public CommonDao(ConnectionSource connectionSource, Class<T> dataClass) throws SQLException {
+        super(connectionSource, dataClass);
+    }
+
 }

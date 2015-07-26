@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.List;
 
 @DatabaseTable(tableName = "ZSECTOR")
-public class Sector implements ICommonFieldsName {
+public class Sector implements ICommonDtoConstants {
 
     @DatabaseField(columnName = Z_MAX_GRADE)
     private String maxGrade;                // максимальная категория проблемы в секторе
@@ -37,8 +37,8 @@ public class Sector implements ICommonFieldsName {
     private String sectorName;              // название на английском
 
 //    TODO: в таблице БД нет такого поля, только sectorName
-//    @DatabaseField(columnName = Z_SECTOR_NAME)
-//    private String sectorName_ru;           // название на русском
+    @DatabaseField(columnName = Z_SECTOR_NAME)
+    private String sectorName_ru;           // название на русском
 
     @DatabaseField(columnName = Z_SECTOR_PHOTO)
     private byte[] sectorPhoto;             // фото (не указатель!)
@@ -143,5 +143,13 @@ public class Sector implements ICommonFieldsName {
 
     public void setBoulders(List<Boulder> boulders) {
         this.boulders = boulders;
+    }
+
+    public String getSectorName_ru() {
+        return sectorName_ru;
+    }
+
+    public void setSectorName_ru(String sectorName_ru) {
+        this.sectorName_ru = sectorName_ru;
     }
 }

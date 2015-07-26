@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <ImageView
+        android:id="@+id/sectors_list_sector_photo"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/sectors_list_sector_label"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:text="@string/sector_upper"
+        android:textColor="@color/text_main"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/sectors_list_sector_name"
+        android:layout_width="100dp"
+        android:layout_height="18dp"
+        android:layout_alignTop="@+id/sectors_list_sector_label"
+        android:layout_toEndOf="@+id/sectors_list_sector_label"
+        android:layout_toRightOf="@+id/sectors_list_sector_label"
+        android:textColor="@color/text_main"
+        android:textSize="15sp" />
+
+    <ImageView
+        android:id="@+id/sectors_list_line_image"
+        android:layout_width="50sp"
+        android:layout_height="3dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sectors_list_sector_label"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/text_main" />
+
+    <ImageView
+        android:id="@+id/sectors_list_route_image"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sectors_list_line_image"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/region_circle" />
+
+    <TextView
+        android:id="@+id/sectors_list_problem_count"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignTop="@+id/sectors_list_route_image"
+        android:layout_toEndOf="@+id/sectors_list_route_image"
+        android:layout_toRightOf="@+id/sectors_list_route_image"
+        android:text="25"
+        android:textColor="@color/text_main"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/sectors_list_problem_label"
+        android:layout_width="40dp"
+        android:layout_height="10dp"
+        android:layout_alignBottom="@+id/sectors_list_route_image"
+        android:layout_toEndOf="@+id/sectors_list_route_image"
+        android:layout_toRightOf="@+id/sectors_list_route_image"
+        android:text="problems"
+        android:textColor="@color/text_main"
+        android:textSize="9sp" />
+
+    <TextView
+        android:id="@+id/sectors_list_min_grade"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_alignTop="@+id/sectors_list_problem_count"
+        android:layout_marginLeft="15dp"
+        android:layout_toEndOf="@+id/sectors_list_problem_label"
+        android:layout_toRightOf="@+id/sectors_list_problem_label"
+        android:text="6A"
+        android:textColor="@color/text_main"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/sectors_list_on_categories"
+        android:layout_width="wrap_content"
+        android:layout_height="10dp"
+        android:layout_alignBaseline="@+id/sectors_list_problem_label"
+        android:layout_alignBottom="@+id/sectors_list_problem_label"
+        android:layout_alignLeft="@+id/sectors_list_min_grade"
+        android:layout_alignStart="@+id/sectors_list_min_grade"
+        android:text="@string/on_categories"
+        android:textColor="@color/text_main"
+        android:textSize="9sp" />
+
+    <ImageView
+        android:id="@+id/sectors_list_dash"
+        android:layout_width="7sp"
+        android:layout_height="3dp"
+        android:layout_above="@+id/sectors_list_on_categories"
+        android:layout_marginBottom="7dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/sectors_list_min_grade"
+        android:layout_toRightOf="@+id/sectors_list_min_grade"
+        android:background="@color/text_main" />
+
+    <TextView
+        android:id="@+id/sectors_list_max_grade"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_alignTop="@+id/sectors_list_min_grade"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/sectors_list_dash"
+        android:layout_toRightOf="@+id/sectors_list_dash"
+        android:text="7B+"
+        android:textColor="@color/text_main"
+        android:textSize="22sp" />
+
+</RelativeLayout>

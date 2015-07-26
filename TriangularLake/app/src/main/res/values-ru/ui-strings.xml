@@ -3,6 +3,8 @@
 
     <string name="area">Район</string>
     <string name="sectors">секторов</string>
-    <string name="sector">сектора</string>
+    <string name="sector">сектор</string>
+    <string name="sector_upper">СЕКТОР</string>
+    <string name="on_categories">по категориям</string>
 
 </resources>

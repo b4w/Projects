@@ -1,6 +1,6 @@
 package com.triangularlake.constantine.triangularlake.data.dto;
 
-public interface ICommonFieldsName {
+public interface ICommonDtoConstants {
 
     // Common
     String Z_PK = "Z_PK";
@@ -56,4 +56,7 @@ public interface ICommonFieldsName {
     // Photo table
     String Z_PHOTO_DATA = "ZPHOTODATA";
 
+    // DB name
+    String TRIANGULAR_LAKE_DB = "triangular_lake_db";
+    int TRIANGULAR_LAKE_DB_VERSION = 1;
 }

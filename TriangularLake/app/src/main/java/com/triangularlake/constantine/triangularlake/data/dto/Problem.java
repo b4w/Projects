@@ -5,7 +5,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "ZPROBLEM")
-public class Problem implements ICommonFieldsName {
+public class Problem implements ICommonDtoConstants {
 
     @DatabaseField(columnName = Z_FRIEND_HELP)
     private boolean friendHelp;                     // нужна ли помощь страховщика

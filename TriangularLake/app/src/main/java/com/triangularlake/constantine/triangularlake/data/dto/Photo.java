@@ -5,7 +5,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "ZPHOTO")
-public class Photo implements ICommonFieldsName {
+public class Photo implements ICommonDtoConstants {
 
     @DatabaseField(columnName = Z_PHOTO_DATA)
     private byte[] photoData;                   // фото

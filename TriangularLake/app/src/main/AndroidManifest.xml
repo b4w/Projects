@@ -16,6 +16,13 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activities.LietlahtiActivity">
+            <intent-filter>
+                <action android:name="LietlahtiActivity" />
+                <category android:name="ANDROID.INTENT.CATEGORY.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

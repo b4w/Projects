@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.List;
 
 @DatabaseTable(tableName = "ZREGION")
-public class Region implements ICommonFieldsName {
+public class Region implements ICommonDtoConstants {
 
     @DatabaseField(generatedId = false, columnName = Z_REGION_ID)
     private String regionId;                // id региона

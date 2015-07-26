@@ -4,5 +4,7 @@
     <string name="area">Area</string>
     <string name="sectors">sectors</string>
     <string name="sector">sector</string>
+    <string name="sector_upper">SECTOR</string>
+    <string name="on_categories">on categories</string>
 
 </resources>

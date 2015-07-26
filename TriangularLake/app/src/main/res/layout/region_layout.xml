@@ -81,23 +81,68 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/region_layout_triangular_rl"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:background="@drawable/triangular">
 
                 <TextView
+                    android:id="@+id/triangular_area_tv"
+                    android:textColor="@color/text_main"
                     android:layout_width="match_parent"
-                    android:layout_height="20sp"
-                    android:text="@string/area" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/area"
+                    android:gravity="center"
+                    android:layout_above="@+id/triangular_name_tv"/>
 
                 <TextView
+                    android:id="@+id/triangular_name_tv"
+                    android:textColor="@color/text_main"
                     android:layout_width="match_parent"
-                    android:layout_height="20sp"
-                    android:text="LIETLAHTI" />
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="TRIANGULAR" />
 
                 <ImageView
-                    android:layout_width="300sp"
-                    android:layout_height="20sp" />
+                    android:id="@+id/triangular_line_image"
+                    android:layout_width="100sp"
+                    android:layout_height="3dp"
+                    android:background="@color/text_main"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/triangular_name_tv"/>
+
+                <ImageView
+                    android:id="@+id/triangular_circle_image"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/region_circle"
+                    android:layout_below="@+id/triangular_line_image"
+                    android:layout_alignBottom="@+id/triangular_sectors_tv"
+                    android:layout_alignLeft="@+id/triangular_line_image"
+                    android:layout_alignStart="@+id/triangular_line_image" />
+
+                <TextView
+                    android:id="@+id/triangular_quantity_sectors_tv"
+                    android:layout_width="100dp"
+                    android:layout_height="18dp"
+                    android:textColor="@color/text_main"
+                    android:text="6"
+                    android:textSize="15sp"
+                    android:layout_below="@+id/triangular_line_image"
+                    android:layout_toRightOf="@+id/triangular_circle_image"/>
+
+                <TextView
+                    android:id="@+id/triangular_sectors_tv"
+                    android:layout_width="100dp"
+                    android:layout_height="18dp"
+                    android:textColor="@color/text_main"
+                    android:text="@string/sector"
+                    android:textSize="15sp"
+                    android:layout_below="@+id/triangular_quantity_sectors_tv"
+                    android:layout_toRightOf="@+id/triangular_circle_image"/>
 
             </RelativeLayout>
         </LinearLayout>

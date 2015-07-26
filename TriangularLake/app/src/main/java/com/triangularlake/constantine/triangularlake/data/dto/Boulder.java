@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.List;
 
 @DatabaseTable(tableName = "ZBOULDER")
-public class Boulder implements ICommonFieldsName{
+public class Boulder implements ICommonDtoConstants {
 
     @DatabaseField(columnName = Z_BOULDER_DESC)
     private String boulderDesc;                     // описание камня на английском

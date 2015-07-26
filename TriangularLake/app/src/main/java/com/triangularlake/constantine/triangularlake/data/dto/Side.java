@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.List;
 
 @DatabaseTable(tableName = "ZSIDE")
-public class Side implements ICommonFieldsName{
+public class Side implements ICommonDtoConstants {
 
     @DatabaseField(columnName = Z_SIDE_ID)
     private String sideId;                          // id стороны
