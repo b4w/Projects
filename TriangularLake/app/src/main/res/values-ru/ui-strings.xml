@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="area">Район</string>
+    <string name="sectors">секторов</string>
+    <string name="sector">сектора</string>
+
+</resources>
