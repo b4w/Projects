@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <ImageView
+        android:id="@+id/regions_list_region_photo"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/regions_list_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/regions_list_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center"
+        android:text="@string/area"
+        android:textColor="@color/text_main" />
+
+    <TextView
+        android:id="@+id/regions_list_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_main"
+        android:textSize="20sp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/regions_list_line_image"
+        android:layout_width="100sp"
+        android:layout_height="3dp"
+        android:layout_below="@+id/regions_list_name"
+        android:layout_centerHorizontal="true"
+        android:background="@color/text_main" />
+
+    <ImageView
+        android:id="@+id/regions_list_circle_image"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignLeft="@+id/regions_list_line_image"
+        android:layout_alignStart="@+id/regions_list_line_image"
+        android:layout_below="@+id/regions_list_line_image"
+        android:src="@drawable/region_circle" />
+
+    <TextView
+        android:id="@+id/regions_list_count_sectors"
+        android:layout_width="100dp"
+        android:layout_height="18dp"
+        android:layout_alignLeft="@+id/regions_list_sectors_label"
+        android:layout_alignStart="@+id/regions_list_sectors_label"
+        android:layout_alignTop="@+id/regions_list_circle_image"
+        android:text="6"
+        android:textColor="@color/text_main"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/regions_list_sectors_label"
+        android:layout_width="100dp"
+        android:layout_height="18dp"
+        android:layout_alignBottom="@+id/regions_list_circle_image"
+        android:layout_toEndOf="@+id/regions_list_circle_image"
+        android:layout_toRightOf="@+id/regions_list_circle_image"
+        android:text="@string/sector"
+        android:textColor="@color/text_main"
+        android:textSize="15sp" />
+
+</RelativeLayout>

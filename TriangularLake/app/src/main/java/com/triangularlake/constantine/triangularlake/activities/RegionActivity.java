@@ -1,20 +1,37 @@
 package com.triangularlake.constantine.triangularlake.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.j256.ormlite.android.loadercallback.OrmCursorLoaderCallback;
+import com.j256.ormlite.stmt.PreparedQuery;
 import com.triangularlake.constantine.triangularlake.R;
+import com.triangularlake.constantine.triangularlake.adapters.RegionsListAdapter;
+import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
+import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
+import com.triangularlake.constantine.triangularlake.data.dto.Region;
+import com.triangularlake.constantine.triangularlake.data.helpers.ICommonOrmHelper;
+import com.triangularlake.constantine.triangularlake.data.helpers.OrmHelper;
+
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 
 public class RegionActivity extends Activity {
     private static final String TAG = RegionActivity.class.getSimpleName();
 
-    private RelativeLayout region_layout_lietlahti_rl;
-    private RelativeLayout region_layout_triangular_rl;
+    private ListView regionsLayoutListView;
+    private RegionsListAdapter regionsListAdapter;
+    private List<Region> regions;
+
+    private CommonDao commonDao;
+    private OrmHelper ormHelper;
+    private OrmCursorLoaderCallback<Region, Integer> regionLoaderCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,32 +39,70 @@ public class RegionActivity extends Activity {
         setContentView(R.layout.region_layout);
 
         initXmlFields();
-
-        region_layout_lietlahti_rl = (RelativeLayout) findViewById(R.id.region_layout_lietlahti_rl);
-        region_layout_triangular_rl = (RelativeLayout) findViewById(R.id.region_layout_triangular_rl);
-
-        region_layout_lietlahti_rl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), LietlahtiActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        region_layout_triangular_rl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplication(), "Open TRIANGULAR", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        initListeners();
+        initListAdapter();
+        updateEntities();
+        initOrmCursorLoader();
     }
 
     private void initXmlFields() {
         Log.d(TAG, "initXmlFields() start");
-
+        regionsLayoutListView = (ListView) findViewById(R.id.regions_layout_list_view);
         Log.d(TAG, "initXmlFields() done");
     }
 
+    private void initListeners() {
+        Log.d(TAG, "initListeners() start");
+        regionsLayoutListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "CLICK", Toast.LENGTH_SHORT).show();
+            }
+        });
+        Log.d(TAG, "initListeners() done");
+    }
 
+    private void initListAdapter() {
+        Log.d(TAG, "initListAdapter() start");
+        regionsListAdapter = new RegionsListAdapter(getApplicationContext());
+        Log.d(TAG, "initListAdapter() done");
+    }
+
+    private void updateEntities() {
+        Log.d(TAG, "updateEntities() start");
+        List<Region> result = null;
+        try {
+            commonDao = getOrmHelper().getDaoByClass(Region.class);
+            result = commonDao.queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "updateEntities() done");
+        regions = result != null ? result : Collections.<Region>emptyList();
+        Log.d(TAG, "updateEntities() done");
+    }
+
+    public OrmHelper getOrmHelper() {
+        Log.d(TAG, "getOrmHelper() start");
+        if (ormHelper == null) {
+            ormHelper = new OrmHelper(getApplicationContext(), ICommonDtoConstants.TRIANGULAR_LAKE_DB,
+                    ICommonDtoConstants.TRIANGULAR_LAKE_DB_VERSION);
+        }
+        Log.d(TAG, "getOrmHelper() done");
+        return ormHelper;
+    }
+
+    private void initOrmCursorLoader() {
+        Log.d(TAG, "initOrmCursorLoader() start");
+        regionsLayoutListView.setAdapter(regionsListAdapter);
+        try {
+            PreparedQuery query = commonDao.queryBuilder().prepare();
+            regionLoaderCallback = new OrmCursorLoaderCallback<Region, Integer>(getApplicationContext(),
+                    commonDao, query, regionsListAdapter);
+            getLoaderManager().initLoader(ICommonOrmHelper.LIETLAHTI_DAO_NUMBER, null, regionLoaderCallback);
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        Log.d(TAG, "initOrmCursorLoader() done");
+    }
 }

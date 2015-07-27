@@ -20,9 +20,8 @@ public class Region implements ICommonDtoConstants {
     @DatabaseField(columnName = Z_REGION_NAME)
     private String regionName;              // название на английском (по умолчанию)
 
-//    TODO: в таблице БД нет такого поля, только - regionName
-//    @DatabaseField(columnName = Z_REGION_NAME)
-//    private String regionName_ru;           // название на русском
+    @DatabaseField(columnName = Z_REGION_NAME_RU)
+    private String regionNameRu;           // название на русском
 
     @DatabaseField(columnName = Z_REGION_PHOTO)
     private byte[] regionPhoto;             // фотография (не указатель, а само фото)
@@ -30,6 +29,9 @@ public class Region implements ICommonDtoConstants {
 //    TODO: по БД не совсем понятно какая колонка используеся
     private List<Sector> containSectors;    // связь один ко многим на сектора
 
+    public int getCountSectors() {
+        return containSectors != null ? containSectors.size() : 0;
+    }
 
     public Region() {
         // need for ormLite
@@ -43,6 +45,8 @@ public class Region implements ICommonDtoConstants {
         this.regionPhoto = regionPhoto;
         this.containSectors = containSectors;
     }
+
+//    GET & SET
 
     public String getRegionId() {
         return regionId;
@@ -90,5 +94,13 @@ public class Region implements ICommonDtoConstants {
 
     public void setContainSectors(List<Sector> containSectors) {
         this.containSectors = containSectors;
+    }
+
+    public String getRegionNameRu() {
+        return regionNameRu;
+    }
+
+    public void setRegionNameRu(String regionNameRu) {
+        this.regionNameRu = regionNameRu;
     }
 }

@@ -17,6 +17,7 @@ public interface ICommonDtoConstants {
     String Z_REGION_LAT = "ZREGIONLAT";
     String Z_REGION_LON = "ZREGIONLON";
     String Z_REGION_NAME = "ZREGIONNAME";
+    String Z_REGION_NAME_RU = "ZREGIONNAME_RU";
     String Z_REGION_PHOTO = "ZREGIONPHOTO";
 
     // Sector table
