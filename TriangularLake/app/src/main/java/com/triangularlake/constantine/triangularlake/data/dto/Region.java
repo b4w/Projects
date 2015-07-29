@@ -1,58 +1,63 @@
 package com.triangularlake.constantine.triangularlake.data.dto;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.Collection;
 import java.util.List;
 
-@DatabaseTable(tableName = "ZREGION")
+@DatabaseTable(tableName = "REGION")
 public class Region implements ICommonDtoConstants {
 
-    @DatabaseField(generatedId = false, columnName = Z_REGION_ID)
-    private String regionId;                // id региона
+    @DatabaseField(generatedId = false, columnName = REGION_ID)
+    private Long regionId;                  // id региона
 
-    @DatabaseField(columnName = Z_REGION_LAT)
+    @DatabaseField(columnName = REGION_LAT)
     private String regionLat;               // широта координаты центра региона
 
-    @DatabaseField(columnName = Z_REGION_LON)
+    @DatabaseField(columnName = REGION_LON)
     private String regionLon;               // долгота координаты центра рениона
 
-    @DatabaseField(columnName = Z_REGION_NAME)
+    @DatabaseField(columnName = REGION_NAME)
     private String regionName;              // название на английском (по умолчанию)
 
-    @DatabaseField(columnName = Z_REGION_NAME_RU)
-    private String regionNameRu;           // название на русском
+    @DatabaseField(columnName = REGION_NAME_RU)
+    private String regionNameRu;            // название на русском
 
-    @DatabaseField(columnName = Z_REGION_PHOTO)
+    @DatabaseField(dataType = DataType.BYTE_ARRAY, columnName = REGION_PHOTO)
     private byte[] regionPhoto;             // фотография (не указатель, а само фото)
 
-//    TODO: по БД не совсем понятно какая колонка используеся
-    private List<Sector> containSectors;    // связь один ко многим на сектора
+    @ForeignCollectionField(eager = true)
+    private Collection<Sector> sectors;     // ссылка oneToMany на Sector
 
     public int getCountSectors() {
-        return containSectors != null ? containSectors.size() : 0;
+        return sectors != null ? sectors.size() : 0;
     }
 
     public Region() {
         // need for ormLite
     }
 
-    public Region(String regionId, String regionLat, String regionLon, String regionName, byte[] regionPhoto, List<Sector> containSectors) {
+    public Region(Long regionId, String regionLat, String regionLon, String regionName,
+                  byte[] regionPhoto, List<Sector> sectors) {
         this.regionId = regionId;
         this.regionLat = regionLat;
         this.regionLon = regionLon;
         this.regionName = regionName;
         this.regionPhoto = regionPhoto;
-        this.containSectors = containSectors;
+        this.sectors = sectors;
     }
 
 //    GET & SET
 
-    public String getRegionId() {
+
+    public Long getRegionId() {
         return regionId;
     }
 
-    public void setRegionId(String regionId) {
+    public void setRegionId(Long regionId) {
         this.regionId = regionId;
     }
 
@@ -88,12 +93,12 @@ public class Region implements ICommonDtoConstants {
         this.regionPhoto = regionPhoto;
     }
 
-    public List<Sector> getContainSectors() {
-        return containSectors;
+    public Collection<Sector> getSectors() {
+        return sectors;
     }
 
-    public void setContainSectors(List<Sector> containSectors) {
-        this.containSectors = containSectors;
+    public void setSectors(Collection<Sector> sectors) {
+        this.sectors = sectors;
     }
 
     public String getRegionNameRu() {

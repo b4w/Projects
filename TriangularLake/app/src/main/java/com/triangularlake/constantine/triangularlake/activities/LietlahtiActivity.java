@@ -90,7 +90,7 @@ public class LietlahtiActivity extends Activity {
             PreparedQuery query = commonDao.queryBuilder().prepare();
             sectorLoaderCallback = new OrmCursorLoaderCallback<Sector, Integer>(getApplicationContext(),
                     commonDao, query, lietlahtiListAdapter);
-            getLoaderManager().initLoader(ICommonOrmHelper.LIETLAHTI_DAO_NUMBER, null, sectorLoaderCallback);
+            getLoaderManager().initLoader(ICommonDtoConstants.LIETLAHTI_LOADER_NUMBER, null, sectorLoaderCallback);
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

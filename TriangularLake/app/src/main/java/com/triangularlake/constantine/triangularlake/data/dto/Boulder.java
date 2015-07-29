@@ -1,59 +1,73 @@
 package com.triangularlake.constantine.triangularlake.data.dto;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.List;
+import java.util.Collection;
 
-@DatabaseTable(tableName = "ZBOULDER")
+@DatabaseTable(tableName = "BOULDER")
 public class Boulder implements ICommonDtoConstants {
 
-    @DatabaseField(columnName = Z_BOULDER_DESC)
+    @DatabaseField(columnName = BOULDER_ID)
+    private Long boulderId;                         // id камня
+
+    @DatabaseField(columnName = BOULDER_DESC)
     private String boulderDesc;                     // описание камня на английском
 
-//    TODO: в таблице БД нет такого поля, только - boulderDesc
-//    @DatabaseField(columnName = Z_BOULDER_DESC)
-//    private String boulderDesc_ru;                  // описание камня на русском
+    @DatabaseField(columnName = BOULDER_DESC_RU)
+    private String boulderDescRu;                   // описание камня на русском
 
-    @DatabaseField(columnName = Z_BOULDER_ID)
-    private String boulderId;                       // id камня
-
-    @DatabaseField(columnName = Z_BOULDER_LAT)
+    @DatabaseField(columnName = BOULDER_LAT)
     private String boulderLat;                      // широта координаты камня
 
-    @DatabaseField(columnName = Z_BOULDER_LON)
+    @DatabaseField(columnName = BOULDER_LON)
     private String boulderLon;                      // долгота координаты камня
 
-    @DatabaseField(columnName = Z_BOULDER_NAME)
+    @DatabaseField(columnName = BOULDER_NAME)
     private String boulderName;                     // название на английском
 
-//    TODO: в таблице БД нет такого поля, только - boulderName
-//    @DatabaseField(columnName = Z_BOULDER_NAME)
-//    private String boulderName_ru;                  // название на русском
+    @DatabaseField(columnName = BOULDER_NAME_RU)
+    private String boulderNameRu;                   // название на русском
 
-    @DatabaseField(columnName = Z_BOULDER_PHOTO)
-    private Photo boulderPhoto;                     // содержит фото
+    @DatabaseField(columnName = BOULDER_PHOTO)
+    private Photo boulderPhoto;                     // ссылка oneToOne на Photo (id Photo)
 
-//    TODO: по БД не совсем понятно какая колонка используеся. Нет привязки в БД.
-    private List<Problem> containProblems;          // содержит проблемы
-//    TODO: по БД не совсем понятно какая колонка используеся. Нет привязки в БД.
-    private List<Side> containSides;                // содержит стороны
+    @ForeignCollectionField(eager = true)
+    private Collection<Problem> problems;           // ссылка oneToMany на Problems
+
+    @ForeignCollectionField(eager = true)
+    private Collection<Side> sides;                 // ссылка oneToMany на Side
+
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
+    private Sector sector;                          // ссылка manyToOne на Sector
 
     public Boulder() {
         // need to ornLite
     }
 
-    public Boulder(String boulderDesc, String boulderId, String boulderLat, String boulderLon,
-                   String boulderName, Photo boulderPhoto, List<Problem> containProblems,
-                   List<Side> containSides) {
-        this.boulderDesc = boulderDesc;
+    public Boulder(Long boulderId, String boulderDesc, String boulderDescRu, String boulderLat,
+                   String boulderLon, String boulderName, String boulderNameRu, Photo boulderPhoto,
+                   Collection<Problem> problems, Collection<Side> sides, Sector sector) {
         this.boulderId = boulderId;
+        this.boulderDesc = boulderDesc;
+        this.boulderDescRu = boulderDescRu;
         this.boulderLat = boulderLat;
         this.boulderLon = boulderLon;
         this.boulderName = boulderName;
+        this.boulderNameRu = boulderNameRu;
         this.boulderPhoto = boulderPhoto;
-        this.containProblems = containProblems;
-        this.containSides = containSides;
+        this.problems = problems;
+        this.sides = sides;
+        this.sector = sector;
+    }
+
+    public Long getBoulderId() {
+        return boulderId;
+    }
+
+    public void setBoulderId(Long boulderId) {
+        this.boulderId = boulderId;
     }
 
     public String getBoulderDesc() {
@@ -64,12 +78,12 @@ public class Boulder implements ICommonDtoConstants {
         this.boulderDesc = boulderDesc;
     }
 
-    public String getBoulderId() {
-        return boulderId;
+    public String getBoulderDescRu() {
+        return boulderDescRu;
     }
 
-    public void setBoulderId(String boulderId) {
-        this.boulderId = boulderId;
+    public void setBoulderDescRu(String boulderDescRu) {
+        this.boulderDescRu = boulderDescRu;
     }
 
     public String getBoulderLat() {
@@ -96,6 +110,14 @@ public class Boulder implements ICommonDtoConstants {
         this.boulderName = boulderName;
     }
 
+    public String getBoulderNameRu() {
+        return boulderNameRu;
+    }
+
+    public void setBoulderNameRu(String boulderNameRu) {
+        this.boulderNameRu = boulderNameRu;
+    }
+
     public Photo getBoulderPhoto() {
         return boulderPhoto;
     }
@@ -104,19 +126,27 @@ public class Boulder implements ICommonDtoConstants {
         this.boulderPhoto = boulderPhoto;
     }
 
-    public List<Problem> getContainProblems() {
-        return containProblems;
+    public Collection<Problem> getProblems() {
+        return problems;
     }
 
-    public void setContainProblems(List<Problem> containProblems) {
-        this.containProblems = containProblems;
+    public void setProblems(Collection<Problem> problems) {
+        this.problems = problems;
     }
 
-    public List<Side> getContainSides() {
-        return containSides;
+    public Collection<Side> getSides() {
+        return sides;
     }
 
-    public void setContainSides(List<Side> containSides) {
-        this.containSides = containSides;
+    public void setSides(Collection<Side> sides) {
+        this.sides = sides;
+    }
+
+    public Sector getSector() {
+        return sector;
+    }
+
+    public void setSector(Sector sector) {
+        this.sector = sector;
     }
 }

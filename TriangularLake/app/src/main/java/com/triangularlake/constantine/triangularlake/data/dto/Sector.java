@@ -1,68 +1,82 @@
 package com.triangularlake.constantine.triangularlake.data.dto;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.List;
+import java.util.Collection;
 
-@DatabaseTable(tableName = "ZSECTOR")
+@DatabaseTable(tableName = "SECTOR")
 public class Sector implements ICommonDtoConstants {
 
-    @DatabaseField(columnName = Z_MAX_GRADE)
+    @DatabaseField(generatedId = false, columnName = SECTOR_ID)
+    private Long sectorId;                  // id сектора
+
+    @DatabaseField(columnName = MAX_GRADE)
     private String maxGrade;                // максимальная категория проблемы в секторе
 
-    @DatabaseField(columnName = Z_MIN_GRADE)
+    @DatabaseField(columnName = MIN_GRADE)
     private String minGrade;                // минимальная категория проблемы в секторе
 
-    @DatabaseField(columnName = Z_PROBLEM_COUNT)
+    @DatabaseField(columnName = PROBLEM_COUNT)
     private int problemCount;               // кол-во проблем в секторе
 
-    @DatabaseField(columnName = Z_SECTOR_DESC)
+    @DatabaseField(columnName = SECTOR_DESC)
     private String sectorDesc;              // описание сектора на английском
 
-//    TODO: в таблице БД нет такого поля, только - sectorDesc
-//    @DatabaseField(columnName = Z_SECTOR_DESC)
-//    private String sectorDesc_ru;           // описание сектора на русском
+    @DatabaseField(columnName = SECTOR_DESC_RU)
+    private String sectorDescRu;            // описание сектора на русском
 
-    @DatabaseField(columnName = Z_SECTOR_ID)
-    private String sectorId;                // id сектора
-
-    @DatabaseField(columnName = Z_SECTOR_LAT)
+    @DatabaseField(columnName = SECTOR_LAT)
     private String sectorLat;               // широта центра
 
-    @DatabaseField(columnName = Z_SECTOR_LON)
+    @DatabaseField(columnName = SECTOR_LON)
     private String sectorLon;               // долгота центра
 
-    @DatabaseField(columnName = Z_SECTOR_NAME)
+    @DatabaseField(columnName = SECTOR_NAME)
     private String sectorName;              // название на английском
 
-//    TODO: в таблице БД нет такого поля, только sectorName
-    @DatabaseField(columnName = Z_SECTOR_NAME)
-    private String sectorName_ru;           // название на русском
+    @DatabaseField(columnName = SECTOR_NAME_RU)
+    private String sectorNameRu;            // название на русском
 
-    @DatabaseField(columnName = Z_SECTOR_PHOTO)
+    @DatabaseField(dataType = DataType.BYTE_ARRAY, columnName = SECTOR_PHOTO)
     private byte[] sectorPhoto;             // фото (не указатель!)
 
-//    TODO: по БД не совсем понятно какая колонка используеся. Нет привязки в БД.
-    private List<Boulder> boulders;         // cвязь один ко многим - содержит камни
+    @ForeignCollectionField(eager = true)
+    private Collection<Boulder> boulders;   // ссылка oneToMany на Boulder
+
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true) // maxForeignAutoRefreshLevel = 3
+    private Region region;
 
     public Sector() {
         // need for ormLite
     }
 
-    public Sector(String maxGrade, String minGrade, int problemCount, String sectorDesc,
-                  String sectorId, String sectorLat, String sectorLon, String sectorName,
-                  byte[] sectorPhoto, List<Boulder> boulders) {
+    public Sector(Long sectorId, String maxGrade, String minGrade, int problemCount, String sectorDesc,
+                  String sectorDescRu, String sectorLat, String sectorLon, String sectorName,
+                  String sectorNameRu, byte[] sectorPhoto, Collection<Boulder> boulders, Region region) {
+        this.sectorId = sectorId;
         this.maxGrade = maxGrade;
         this.minGrade = minGrade;
         this.problemCount = problemCount;
         this.sectorDesc = sectorDesc;
-        this.sectorId = sectorId;
+        this.sectorDescRu = sectorDescRu;
         this.sectorLat = sectorLat;
         this.sectorLon = sectorLon;
         this.sectorName = sectorName;
+        this.sectorNameRu = sectorNameRu;
         this.sectorPhoto = sectorPhoto;
         this.boulders = boulders;
+        this.region = region;
+    }
+
+    public Long getSectorId() {
+        return sectorId;
+    }
+
+    public void setSectorId(Long sectorId) {
+        this.sectorId = sectorId;
     }
 
     public String getMaxGrade() {
@@ -97,12 +111,12 @@ public class Sector implements ICommonDtoConstants {
         this.sectorDesc = sectorDesc;
     }
 
-    public String getSectorId() {
-        return sectorId;
+    public String getSectorDescRu() {
+        return sectorDescRu;
     }
 
-    public void setSectorId(String sectorId) {
-        this.sectorId = sectorId;
+    public void setSectorDescRu(String sectorDescRu) {
+        this.sectorDescRu = sectorDescRu;
     }
 
     public String getSectorLat() {
@@ -129,6 +143,14 @@ public class Sector implements ICommonDtoConstants {
         this.sectorName = sectorName;
     }
 
+    public String getSectorNameRu() {
+        return sectorNameRu;
+    }
+
+    public void setSectorNameRu(String sectorNameRu) {
+        this.sectorNameRu = sectorNameRu;
+    }
+
     public byte[] getSectorPhoto() {
         return sectorPhoto;
     }
@@ -137,19 +159,19 @@ public class Sector implements ICommonDtoConstants {
         this.sectorPhoto = sectorPhoto;
     }
 
-    public List<Boulder> getBoulders() {
+    public Collection<Boulder> getBoulders() {
         return boulders;
     }
 
-    public void setBoulders(List<Boulder> boulders) {
+    public void setBoulders(Collection<Boulder> boulders) {
         this.boulders = boulders;
     }
 
-    public String getSectorName_ru() {
-        return sectorName_ru;
+    public Region getRegion() {
+        return region;
     }
 
-    public void setSectorName_ru(String sectorName_ru) {
-        this.sectorName_ru = sectorName_ru;
+    public void setRegion(Region region) {
+        this.region = region;
     }
 }

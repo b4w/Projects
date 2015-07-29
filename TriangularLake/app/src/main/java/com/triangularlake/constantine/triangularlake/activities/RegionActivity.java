@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.facebook.stetho.Stetho;
 import com.j256.ormlite.android.loadercallback.OrmCursorLoaderCallback;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.triangularlake.constantine.triangularlake.R;
@@ -15,7 +16,6 @@ import com.triangularlake.constantine.triangularlake.adapters.RegionsListAdapter
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Region;
-import com.triangularlake.constantine.triangularlake.data.helpers.ICommonOrmHelper;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmHelper;
 
 import java.sql.SQLException;
@@ -31,12 +31,21 @@ public class RegionActivity extends Activity {
 
     private CommonDao commonDao;
     private OrmHelper ormHelper;
-    private OrmCursorLoaderCallback<Region, Integer> regionLoaderCallback;
+    private OrmCursorLoaderCallback<Region, Long> regionLoaderCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.region_layout);
+
+        // библиотека для работы с БД в браузере
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(
+                                Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(
+                                Stetho.defaultInspectorModulesProvider(this))
+                        .build());
 
         initXmlFields();
         initListeners();
@@ -97,9 +106,9 @@ public class RegionActivity extends Activity {
         regionsLayoutListView.setAdapter(regionsListAdapter);
         try {
             PreparedQuery query = commonDao.queryBuilder().prepare();
-            regionLoaderCallback = new OrmCursorLoaderCallback<Region, Integer>(getApplicationContext(),
+            regionLoaderCallback = new OrmCursorLoaderCallback<Region, Long>(getApplicationContext(),
                     commonDao, query, regionsListAdapter);
-            getLoaderManager().initLoader(ICommonOrmHelper.LIETLAHTI_DAO_NUMBER, null, regionLoaderCallback);
+            getLoaderManager().initLoader(ICommonDtoConstants.REGION_LOADER_NUMBER, null, regionLoaderCallback);
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

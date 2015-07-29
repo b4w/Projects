@@ -9,6 +9,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
+import com.triangularlake.constantine.triangularlake.data.dto.Region;
 import com.triangularlake.constantine.triangularlake.data.dto.Sector;
 
 import java.sql.SQLException;
@@ -20,7 +21,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements ICommonOrmHelp
     private SparseArray<CommonDao> daos;
 
     private Class[] classes = {
-            Sector.class
+//            Sector.class,
+            Region.class
     };
 
     public OrmHelper(Context context, String databaseName, int databaseVersion) {
@@ -92,11 +94,10 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements ICommonOrmHelp
 //        }
 
         if (classInstance.equals(Sector.class)) {
-            return getDaoByNum(Sector.class, LIETLAHTI_DAO_NUMBER);
+            return getDaoByNum(Sector.class, SECTOR_DAO_NUMBER);
+        } else if (classInstance.equals(Region.class)) {
+            return getDaoByNum(Region.class, REGION_DAO_NUMBER);
         }
-//        else if (classInstance.equals(Equipment.class)) {
-//            return getDaoByNum(Equipment.class, EQUIPMENT_DAO_NUMBER);
-//        }
         return null;
     }
 

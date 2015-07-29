@@ -1,30 +1,32 @@
 package com.triangularlake.constantine.triangularlake.data.dto;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.List;
+import java.util.Collection;
 
-@DatabaseTable(tableName = "ZSIDE")
+@DatabaseTable(tableName = "SIDE")
 public class Side implements ICommonDtoConstants {
 
-    @DatabaseField(columnName = Z_SIDE_ID)
+    @DatabaseField(columnName = SIDE_ID)
     private String sideId;                          // id стороны
 
-    @DatabaseField(columnName = Z_SIDE_PHOTO)
+    @DatabaseField(dataType = DataType.BYTE_ARRAY, columnName = SIDE_PHOTO)
     private byte[] sidePhoto;                       // фото (не ссылка)
 
-//    TODO: по БД не совсем понятно какая колонка используеся. Нет привязки в БД.
-    private List<Problem> containProblems;          // содержит проблемы
+    @ForeignCollectionField(eager = true)
+    private Collection<Problem> problems;          // ссылка oneToMany на Problem
 
     public Side() {
         // need for ormLite
     }
 
-    public Side(String sideId, byte[] sidePhoto, List<Problem> containProblems) {
+    public Side(String sideId, byte[] sidePhoto, Collection<Problem> problems) {
         this.sideId = sideId;
         this.sidePhoto = sidePhoto;
-        this.containProblems = containProblems;
+        this.problems = problems;
     }
 
     public String getSideId() {
@@ -43,11 +45,11 @@ public class Side implements ICommonDtoConstants {
         this.sidePhoto = sidePhoto;
     }
 
-    public List<Problem> getContainProblems() {
-        return containProblems;
+    public Collection<Problem> getProblems() {
+        return problems;
     }
 
-    public void setContainProblems(List<Problem> containProblems) {
-        this.containProblems = containProblems;
+    public void setProblems(Collection<Problem> problems) {
+        this.problems = problems;
     }
 }
