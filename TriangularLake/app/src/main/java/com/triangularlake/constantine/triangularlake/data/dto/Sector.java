@@ -2,16 +2,13 @@ package com.triangularlake.constantine.triangularlake.data.dto;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.Collection;
-
-@DatabaseTable(tableName = "SECTOR")
+@DatabaseTable(tableName = ICommonDtoConstants.SECTOR_TABLE_NAME)
 public class Sector implements ICommonDtoConstants {
 
-    @DatabaseField(generatedId = false, columnName = SECTOR_ID)
-    private Long sectorId;                  // id сектора
+    @DatabaseField(generatedId = false, columnName = ID)
+    private Long id;                        // id сектора
 
     @DatabaseField(columnName = MAX_GRADE)
     private String maxGrade;                // максимальная категория проблемы в секторе
@@ -43,8 +40,8 @@ public class Sector implements ICommonDtoConstants {
     @DatabaseField(dataType = DataType.BYTE_ARRAY, columnName = SECTOR_PHOTO)
     private byte[] sectorPhoto;             // фото (не указатель!)
 
-    @ForeignCollectionField(eager = true)
-    private Collection<Boulder> boulders;   // ссылка oneToMany на Boulder
+//    @ForeignCollectionField(eager = true)
+//    private Collection<Boulder> boulders;   // ссылка oneToMany на Boulder
 
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true) // maxForeignAutoRefreshLevel = 3
     private Region region;
@@ -55,8 +52,8 @@ public class Sector implements ICommonDtoConstants {
 
     public Sector(Long sectorId, String maxGrade, String minGrade, int problemCount, String sectorDesc,
                   String sectorDescRu, String sectorLat, String sectorLon, String sectorName,
-                  String sectorNameRu, byte[] sectorPhoto, Collection<Boulder> boulders, Region region) {
-        this.sectorId = sectorId;
+                  String sectorNameRu, byte[] sectorPhoto,  Region region) {
+        this.id = sectorId;
         this.maxGrade = maxGrade;
         this.minGrade = minGrade;
         this.problemCount = problemCount;
@@ -67,16 +64,16 @@ public class Sector implements ICommonDtoConstants {
         this.sectorName = sectorName;
         this.sectorNameRu = sectorNameRu;
         this.sectorPhoto = sectorPhoto;
-        this.boulders = boulders;
+//        this.boulders = boulders;
         this.region = region;
     }
 
-    public Long getSectorId() {
-        return sectorId;
+    public Long getId() {
+        return id;
     }
 
-    public void setSectorId(Long sectorId) {
-        this.sectorId = sectorId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getMaxGrade() {
@@ -159,13 +156,13 @@ public class Sector implements ICommonDtoConstants {
         this.sectorPhoto = sectorPhoto;
     }
 
-    public Collection<Boulder> getBoulders() {
-        return boulders;
-    }
-
-    public void setBoulders(Collection<Boulder> boulders) {
-        this.boulders = boulders;
-    }
+//    public Collection<Boulder> getBoulders() {
+//        return boulders;
+//    }
+//
+//    public void setBoulders(Collection<Boulder> boulders) {
+//        this.boulders = boulders;
+//    }
 
     public Region getRegion() {
         return region;

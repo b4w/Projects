@@ -21,7 +21,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements ICommonOrmHelp
     private SparseArray<CommonDao> daos;
 
     private Class[] classes = {
-//            Sector.class,
+            Sector.class,
             Region.class
     };
 
@@ -41,6 +41,15 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements ICommonOrmHelp
         }
         Log.d(TAG, "onCreate() done");
     }
+
+    public void createAll() {
+        try {
+            createAllTables(getConnectionSource());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int i, int i1) {
@@ -87,12 +96,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements ICommonOrmHelp
      * @throws SQLException
      */
     public CommonDao getDaoByClass(Class<?> classInstance) throws SQLException {
-
-//        TODO не получает dto по этому методу
-//        if (classInstance.equals(Sector.class)) {
-//            return getCustomDaoByNum(CategoryDao.class, CATEGORY_DAO_NUMBER);
-//        }
-
         if (classInstance.equals(Sector.class)) {
             return getDaoByNum(Sector.class, SECTOR_DAO_NUMBER);
         } else if (classInstance.equals(Region.class)) {

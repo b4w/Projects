@@ -15,7 +15,6 @@ import com.triangularlake.constantine.triangularlake.adapters.SectorsListAdapter
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Sector;
-import com.triangularlake.constantine.triangularlake.data.helpers.ICommonOrmHelper;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmHelper;
 
 import java.sql.SQLException;
@@ -32,7 +31,7 @@ public class LietlahtiActivity extends Activity {
 
     private CommonDao commonDao;
     private OrmHelper ormHelper;
-    private OrmCursorLoaderCallback<Sector, Integer> sectorLoaderCallback;
+    private OrmCursorLoaderCallback<Sector, Long> sectorLoaderCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +87,7 @@ public class LietlahtiActivity extends Activity {
         lietlahtiLayoutListView.setAdapter(lietlahtiListAdapter);
         try {
             PreparedQuery query = commonDao.queryBuilder().prepare();
-            sectorLoaderCallback = new OrmCursorLoaderCallback<Sector, Integer>(getApplicationContext(),
+            sectorLoaderCallback = new OrmCursorLoaderCallback<Sector, Long>(getApplicationContext(),
                     commonDao, query, lietlahtiListAdapter);
             getLoaderManager().initLoader(ICommonDtoConstants.LIETLAHTI_LOADER_NUMBER, null, sectorLoaderCallback);
         } catch (SQLException e) {

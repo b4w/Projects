@@ -8,11 +8,11 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.Collection;
 import java.util.List;
 
-@DatabaseTable(tableName = "REGION")
+@DatabaseTable(tableName = ICommonDtoConstants.REGION_TABLE_NAME)
 public class Region implements ICommonDtoConstants {
 
-    @DatabaseField(generatedId = false, columnName = REGION_ID)
-    private Long regionId;                  // id региона
+    @DatabaseField(id = true, canBeNull = false, generatedId = false, columnName = ID)
+    private Long id;                        // id региона
 
     @DatabaseField(columnName = REGION_LAT)
     private String regionLat;               // широта координаты центра региона
@@ -40,9 +40,9 @@ public class Region implements ICommonDtoConstants {
         // need for ormLite
     }
 
-    public Region(Long regionId, String regionLat, String regionLon, String regionName,
+    public Region(Long id, String regionLat, String regionLon, String regionName,
                   byte[] regionPhoto, List<Sector> sectors) {
-        this.regionId = regionId;
+        this.id = id;
         this.regionLat = regionLat;
         this.regionLon = regionLon;
         this.regionName = regionName;
@@ -52,13 +52,12 @@ public class Region implements ICommonDtoConstants {
 
 //    GET & SET
 
-
-    public Long getRegionId() {
-        return regionId;
+    public Long getId() {
+        return id;
     }
 
-    public void setRegionId(Long regionId) {
-        this.regionId = regionId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getRegionLat() {

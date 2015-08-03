@@ -3,7 +3,7 @@ package com.triangularlake.constantine.triangularlake.data.dto;
 public interface ICommonDtoConstants {
 
     // Common
-    String Z_PK = "Z_PK";
+    String ID = "_id";
     String Z_ENT = "Z_ENT";
     String Z_OPT = "Z_OPT";
     String Z_IN_REGION = "ZINREGION";
@@ -13,6 +13,7 @@ public interface ICommonDtoConstants {
     String Z_IN_PROBLEM = "ZINPROBLEM";
 
     // REGION table
+    String REGION_TABLE_NAME = "REGIONS";
     String REGION_ID = "_id";
     String REGION_LAT = "region_lat";
     String REGION_LON = "region_lon";
@@ -21,6 +22,7 @@ public interface ICommonDtoConstants {
     String REGION_PHOTO = "region_photo";
 
     // SECTOR table
+    String SECTOR_TABLE_NAME = "SECTORS";
     String PROBLEM_COUNT = "problem_count";
     String MAX_GRADE = "max_grade";
     String MIN_GRADE = "min_grade";
@@ -34,7 +36,8 @@ public interface ICommonDtoConstants {
     String SECTOR_PHOTO = "sector_photo";
 
     // Boulder table
-    String BOULDER_PHOTO = "boulder_photo";
+    String BOULDER_TABLE_NAME = "BOULDERS";
+    String BOULDER_PHOTO = "boulder_photo_id";
     String BOULDER_DESC = "boulder_desc";
     String BOULDER_DESC_RU = "boulder_desc_ru";
     String BOULDER_ID = "_id";
@@ -44,21 +47,26 @@ public interface ICommonDtoConstants {
     String BOULDER_NAME_RU = "boulder_name_ru";
 
     // Side table
+    String SIDE_TABLE_NAME = "SIDES";
     String SIDE_ID = "_id";
     String SIDE_PHOTO = "side_photo";
 
     // Problem table
-    String Z_FRIEND_HELP = "ZFRIENDHELP";
-    String Z_PAD_COUNT = "ZPADCOUNT";
-    String Z_WARNING_LEVEL = "ZWARNINGLEVEL";
-    String Z_PROBLEM_PHOTO = "ZPROBLEMPHOTO";
-    String Z_PROBLEM_DESC = "ZPROBLEMDESC";
-    String Z_PROBLEM_GRADE = "ZPROBLEMGRADE";
-    String Z_PROBLEM_ID = "ZPROBLEMID";
-    String Z_PROBLEM_LETTER = "ZPROBLEMLETTER";
-    String Z_PROBLEM_NAME = "ZPROBLEMNAME";
+    String PROBLEM_TABLE_NAME = "PROBLEMS";
+    String FRIEND_HELP = "friend_help";
+    String PAD_COUNT = "pad_count";
+    String WARNING_LEVEL = "warning_level";
+    String PROBLEM_PHOTO = "problem_photo";
+    String PROBLEM_DESC = "problem_desc";
+    String PROBLEM_DESC_RU = "problem_desc_ru";
+    String PROBLEM_GRADE = "problem_grade";
+    String PROBLEM_ID = "_id";
+    String PROBLEM_LETTER = "problem_letter";
+    String PROBLEM_NAME = "problem_name";
+    String PROBLEM_NAME_RU = "problem_name_ru";
 
     // Photo table
+    String PHOTO_TABLE_NAME = "PHOTOS";
     String PHOTO_ID = "_id";
     String PHOTO_DATA = "ZPHOTODATA";
 

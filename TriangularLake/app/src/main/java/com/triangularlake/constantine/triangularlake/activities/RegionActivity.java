@@ -96,6 +96,7 @@ public class RegionActivity extends Activity {
         if (ormHelper == null) {
             ormHelper = new OrmHelper(getApplicationContext(), ICommonDtoConstants.TRIANGULAR_LAKE_DB,
                     ICommonDtoConstants.TRIANGULAR_LAKE_DB_VERSION);
+//            ormHelper.createAll();
         }
         Log.d(TAG, "getOrmHelper() done");
         return ormHelper;

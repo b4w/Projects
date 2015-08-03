@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OrmLiteCursorAdapter;
-import com.squareup.picasso.Picasso;
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.data.dto.Sector;
 
@@ -28,7 +27,7 @@ public class SectorsListAdapter extends OrmLiteCursorAdapter<Sector, View> {
     public void bindView(View view, Context context, Sector sector) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         viewHolder.sectorName.setText(sector.getSectorName());
-        viewHolder.sectorName_ru.setText(sector.getSectorName_ru());
+        viewHolder.sectorNameRu.setText(sector.getSectorDescRu());
         Bitmap bitmap = BitmapFactory.decodeByteArray(sector.getSectorPhoto(), 0, sector.getSectorPhoto().length);
 //        Picasso.with(context).load(bitmap).into(viewHolder.sectorPhoto);
         viewHolder.sectorPhoto.setImageBitmap(bitmap);
@@ -44,7 +43,7 @@ public class SectorsListAdapter extends OrmLiteCursorAdapter<Sector, View> {
         ViewHolder viewHolder = new ViewHolder();
         final View view = layoutInflater.inflate(R.layout.sectors_list_layout, parent, false);
         viewHolder.sectorName = (TextView) view.findViewById(R.id.sectors_list_sector_name);
-        viewHolder.sectorName_ru = (TextView) view.findViewById(R.id.sectors_list_sector_name);
+        viewHolder.sectorNameRu = (TextView) view.findViewById(R.id.sectors_list_sector_name);
         viewHolder.sectorPhoto = (ImageView) view.findViewById(R.id.sectors_list_sector_photo);
         viewHolder.maxGrade = (TextView) view.findViewById(R.id.sectors_list_max_grade);
         viewHolder.minGrade = (TextView) view.findViewById(R.id.sectors_list_min_grade);
@@ -56,7 +55,7 @@ public class SectorsListAdapter extends OrmLiteCursorAdapter<Sector, View> {
 
     public static class ViewHolder {
         public TextView sectorName;       // название сектора на английском
-        public TextView sectorName_ru;    // название сектора на русском
+        public TextView sectorNameRu;    // название сектора на русском
         // public byte[] sectorPhoto;      // фотография сектора
         public ImageView sectorPhoto;      // фотография сектора
         public TextView maxGrade;         // максимальная категория в секторе
