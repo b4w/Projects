@@ -6,5 +6,8 @@
     <string name="sector">сектор</string>
     <string name="sector_upper">СЕКТОР</string>
     <string name="on_categories">по категориям</string>
+    <string name="description_upper">ОПИСАНИЕ</string>
+    <string name="stones_upper">КАМНИ</string>
+    <string name="look_on_map_upper">ПОСМОТРЕТЬ НА КАРТЕ</string>
 
 </resources>

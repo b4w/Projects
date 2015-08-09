@@ -75,6 +75,6 @@ public interface ICommonDtoConstants {
     int TRIANGULAR_LAKE_DB_VERSION = 1;
 
     // Constants for loaders
-    int LIETLAHTI_LOADER_NUMBER = 0;
+    int SECTOR_LOADER_NUMBER = 0;
     int REGION_LOADER_NUMBER = 1;
 }

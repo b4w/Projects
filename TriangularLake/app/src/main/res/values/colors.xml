@@ -3,5 +3,6 @@
 
     <color name="text_main">#FFFFFF</color>
     <color name="background">#000000</color>
+    <color name="grey">#9e9e9e</color>
 
 </resources>

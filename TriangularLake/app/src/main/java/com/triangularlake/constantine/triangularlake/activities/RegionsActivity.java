@@ -1,12 +1,12 @@
 package com.triangularlake.constantine.triangularlake.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
 import com.j256.ormlite.android.loadercallback.OrmCursorLoaderCallback;
@@ -19,15 +19,16 @@ import com.triangularlake.constantine.triangularlake.data.dto.Region;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmHelper;
 
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
 
-public class RegionActivity extends Activity {
-    private static final String TAG = RegionActivity.class.getSimpleName();
+public class RegionsActivity extends Activity {
+    private static final String TAG = RegionsActivity.class.getSimpleName();
+
+    public static final String REGION_LIETLAHTI = "LIETLAHTI";
+    public static final String REGION_TRIANGULAR_LAKE = "TRIANGULAR LAKE";
+    public static final String REGION_ID = "region_id";
 
     private ListView regionsLayoutListView;
     private RegionsListAdapter regionsListAdapter;
-    private List<Region> regions;
 
     private CommonDao commonDao;
     private OrmHelper ormHelper;
@@ -36,7 +37,7 @@ public class RegionActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.region_layout);
+        setContentView(R.layout.regions_layout);
 
         // библиотека для работы с БД в браузере
         Stetho.initialize(
@@ -50,7 +51,6 @@ public class RegionActivity extends Activity {
         initXmlFields();
         initListeners();
         initListAdapter();
-        updateEntities();
         initOrmCursorLoader();
     }
 
@@ -65,7 +65,20 @@ public class RegionActivity extends Activity {
         regionsLayoutListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "CLICK", Toast.LENGTH_SHORT).show();
+                Region region = regionsListAdapter.getTypedItem(position);
+                Intent intent = null;
+
+                switch (region.getRegionName()) {
+                    case REGION_LIETLAHTI:
+                        intent = new Intent(getApplicationContext(), SectorsActivity.class);
+                        break;
+                    case REGION_TRIANGULAR_LAKE:
+                        intent = new Intent(getApplicationContext(), SectorsActivity.class);
+                        break;
+                }
+
+                intent.putExtra(REGION_ID, region.getId());
+                startActivity(intent);
             }
         });
         Log.d(TAG, "initListeners() done");
@@ -77,19 +90,6 @@ public class RegionActivity extends Activity {
         Log.d(TAG, "initListAdapter() done");
     }
 
-    private void updateEntities() {
-        Log.d(TAG, "updateEntities() start");
-        List<Region> result = null;
-        try {
-            commonDao = getOrmHelper().getDaoByClass(Region.class);
-            result = commonDao.queryForAll();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "updateEntities() done");
-        regions = result != null ? result : Collections.<Region>emptyList();
-        Log.d(TAG, "updateEntities() done");
-    }
 
     public OrmHelper getOrmHelper() {
         Log.d(TAG, "getOrmHelper() start");
@@ -106,10 +106,15 @@ public class RegionActivity extends Activity {
         Log.d(TAG, "initOrmCursorLoader() start");
         regionsLayoutListView.setAdapter(regionsListAdapter);
         try {
-            PreparedQuery query = commonDao.queryBuilder().prepare();
-            regionLoaderCallback = new OrmCursorLoaderCallback<Region, Long>(getApplicationContext(),
-                    commonDao, query, regionsListAdapter);
-            getLoaderManager().initLoader(ICommonDtoConstants.REGION_LOADER_NUMBER, null, regionLoaderCallback);
+            commonDao = getOrmHelper().getDaoByClass(Region.class);
+            if (commonDao != null) {
+                PreparedQuery query = commonDao.queryBuilder().prepare();
+                regionLoaderCallback = new OrmCursorLoaderCallback<Region, Long>(getApplicationContext(),
+                        commonDao, query, regionsListAdapter);
+                getLoaderManager().initLoader(ICommonDtoConstants.REGION_LOADER_NUMBER, null, regionLoaderCallback);
+            } else {
+                Log.e(TAG, "Error when load Regions");
+            }
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

@@ -17,11 +17,11 @@ import com.triangularlake.constantine.triangularlake.utils.StringUtils;
 
 import java.util.Locale;
 
-public class SectorsListAdapter extends OrmLiteCursorAdapter<Sector, View> {
+public class SectorBouldersAdapter extends OrmLiteCursorAdapter<Sector, View> {
 
     private LayoutInflater layoutInflater;
 
-    public SectorsListAdapter(Context context) {
+    public SectorBouldersAdapter(Context context) {
         super(context);
         layoutInflater = LayoutInflater.from(context);
     }

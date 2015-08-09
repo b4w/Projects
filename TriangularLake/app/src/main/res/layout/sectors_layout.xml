@@ -5,10 +5,8 @@
     android:orientation="vertical">
 
     <ListView
-        android:id="@+id/lietlahti_layout_list_view"
+        android:id="@+id/sectors_layout_list_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

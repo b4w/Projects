@@ -43,7 +43,7 @@ public class Sector implements ICommonDtoConstants {
 //    @ForeignCollectionField(eager = true)
 //    private Collection<Boulder> boulders;   // ссылка oneToMany на Boulder
 
-    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true) // maxForeignAutoRefreshLevel = 3
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Region region;
 
     public Sector() {

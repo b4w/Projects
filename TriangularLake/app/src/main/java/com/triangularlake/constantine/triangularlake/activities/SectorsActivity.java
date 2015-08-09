@@ -1,6 +1,7 @@
 package com.triangularlake.constantine.triangularlake.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,16 +19,15 @@ import com.triangularlake.constantine.triangularlake.data.dto.Sector;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmHelper;
 
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
 
-public class LietlahtiActivity extends Activity {
+public class SectorsActivity extends Activity {
 
-    private static final String TAG = LietlahtiActivity.class.getSimpleName();
+    private static final String TAG = SectorsActivity.class.getSimpleName();
 
-    private ListView lietlahtiLayoutListView;
-    private SectorsListAdapter lietlahtiListAdapter;
-    private List<Sector> sectors;
+    private ListView sectorLayoutListView;
+    private SectorsListAdapter sectorListAdapter;
+
+    private long regionId;
 
     private CommonDao commonDao;
     private OrmHelper ormHelper;
@@ -36,27 +36,35 @@ public class LietlahtiActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.lietlahti_layout);
+        setContentView(R.layout.sectors_layout);
 
+        initInputValues();
         initXmlFields();
         initListeners();
         initListAdapter();
-        updateEntities();
         initOrmCursorLoader();
+    }
+
+    private void initInputValues() {
+        Log.d(TAG, "initInputValues() start");
+        regionId = getIntent().getExtras().getLong(RegionsActivity.REGION_ID);
+        Log.d(TAG, "initInputValues() done");
     }
 
     private void initXmlFields() {
         Log.d(TAG, "initXmlFields() start");
-        lietlahtiLayoutListView = (ListView) findViewById(R.id.lietlahti_layout_list_view);
+        sectorLayoutListView = (ListView) findViewById(R.id.sectors_layout_list_view);
         Log.d(TAG, "initXmlFields() done");
     }
 
     private void initListeners() {
         Log.d(TAG, "initListeners() start");
-        lietlahtiLayoutListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        sectorLayoutListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "CLICK", Toast.LENGTH_SHORT).show();
+                Sector sector = sectorListAdapter.getTypedItem(position);
+                Intent intent = new Intent(getApplicationContext(), SectorActivity.class);
+                startActivity(intent);
             }
         });
         Log.d(TAG, "initListeners() done");
@@ -64,32 +72,21 @@ public class LietlahtiActivity extends Activity {
 
     private void initListAdapter() {
         Log.d(TAG, "initListAdapter() start");
-        lietlahtiListAdapter = new SectorsListAdapter(getApplicationContext());
+        sectorListAdapter = new SectorsListAdapter(getApplicationContext());
         Log.d(TAG, "initListAdapter() done");
-    }
-
-    private void updateEntities() {
-        Log.d(TAG, "updateEntities() start");
-        List<Sector> result = null;
-        try {
-            commonDao = getOrmHelper().getDaoByClass(Sector.class);
-            result = commonDao.queryForAll();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "updateEntities() done");
-        sectors = result != null ? result : Collections.<Sector>emptyList();
-        Log.d(TAG, "updateEntities() done");
     }
 
     private void initOrmCursorLoader() {
         Log.d(TAG, "initOrmCursorLoader() start");
-        lietlahtiLayoutListView.setAdapter(lietlahtiListAdapter);
+        sectorLayoutListView.setAdapter(sectorListAdapter);
         try {
-            PreparedQuery query = commonDao.queryBuilder().prepare();
-            sectorLoaderCallback = new OrmCursorLoaderCallback<Sector, Long>(getApplicationContext(),
-                    commonDao, query, lietlahtiListAdapter);
-            getLoaderManager().initLoader(ICommonDtoConstants.LIETLAHTI_LOADER_NUMBER, null, sectorLoaderCallback);
+            commonDao = getOrmHelper().getDaoByClass(Sector.class);
+            if (commonDao != null) {
+                PreparedQuery query = commonDao.queryBuilder().where().eq(RegionsActivity.REGION_ID, regionId).prepare();
+                sectorLoaderCallback = new OrmCursorLoaderCallback<Sector, Long>(getApplicationContext(),
+                        commonDao, query, sectorListAdapter);
+                getLoaderManager().initLoader(ICommonDtoConstants.SECTOR_LOADER_NUMBER, null, sectorLoaderCallback);
+            }
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

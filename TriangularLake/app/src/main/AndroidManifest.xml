@@ -8,7 +8,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activities.RegionActivity"
+            android:name=".activities.RegionsActivity"
             android:label="Triangular Lake">
             <intent-filter>
                 <action android:name="ANDROID.INTENT.ACTION.MAIN" />
@@ -16,9 +16,16 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.LietlahtiActivity">
+        <activity android:name=".activities.SectorsActivity">
             <intent-filter>
-                <action android:name="LietlahtiActivity" />
+                <action android:name="SectorsActivity" />
+                <category android:name="ANDROID.INTENT.CATEGORY.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activities.SectorActivity">
+            <intent-filter>
+                <action android:name="SectorActivity" />
                 <category android:name="ANDROID.INTENT.CATEGORY.DEFAULT" />
             </intent-filter>
         </activity>

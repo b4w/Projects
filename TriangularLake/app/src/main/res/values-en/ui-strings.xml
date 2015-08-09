@@ -6,5 +6,8 @@
     <string name="sector">sector</string>
     <string name="sector_upper">SECTOR</string>
     <string name="on_categories">on categories</string>
+    <string name="description_upper">DESCRIPTION</string>
+    <string name="stones_upper">STONES</string>
+    <string name="look_on_map_upper">LOOK ON A MAP</string>
 
 </resources>

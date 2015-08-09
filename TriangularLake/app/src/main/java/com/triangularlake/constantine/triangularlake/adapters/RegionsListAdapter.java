@@ -30,10 +30,10 @@ public class RegionsListAdapter extends OrmLiteCursorAdapter<Region, View> {
     public void bindView(View view, Context context, Region region) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         if (viewHolder.regionName != null) {
-            viewHolder.regionName.setText(region.getRegionName());
+            viewHolder.regionName.setText("<<" + region.getRegionName() + ">>");
         }
         if (viewHolder.regionNameRu != null) {
-            viewHolder.regionNameRu.setText(region.getRegionNameRu());
+            viewHolder.regionNameRu.setText("<<" + region.getRegionNameRu() + ">>");
         }
         viewHolder.countSectors.setText(region.getCountSectors() + "");
         viewHolder.sectorsLabel.setText(StringUtils.getSectorLabelOnLanguage());

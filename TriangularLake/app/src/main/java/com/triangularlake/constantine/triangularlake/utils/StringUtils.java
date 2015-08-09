@@ -17,4 +17,16 @@ public class StringUtils {
         }
         return sectorLabel;
     }
+
+    public static String getProblemLabelOnLanguage() {
+        String problemLabel;
+        if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
+            problemLabel = "problems";
+        } else if (Locale.getDefault().getLanguage().equals("ru")) {
+            problemLabel = "проблем";
+        } else {
+            problemLabel = "problems";
+        }
+        return problemLabel;
+    }
 }
