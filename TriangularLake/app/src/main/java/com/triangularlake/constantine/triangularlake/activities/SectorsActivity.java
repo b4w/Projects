@@ -14,6 +14,7 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.SectorsListAdapter;
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
+import com.triangularlake.constantine.triangularlake.data.dto.Boulder;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Sector;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmHelper;
@@ -64,10 +65,22 @@ public class SectorsActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Sector sector = sectorListAdapter.getTypedItem(position);
                 Intent intent = new Intent(getApplicationContext(), SectorActivity.class);
+                intent.putExtra("sectorId", sector.getId());
+                intent.putExtra("boulderNumbers", getCollectedBoulderNumbers(sector));
                 startActivity(intent);
             }
         });
         Log.d(TAG, "initListeners() done");
+    }
+
+    private long[] getCollectedBoulderNumbers(Sector sector) {
+        long[] result = new long[sector.getBoulders().size()];
+        for (Boulder boulder : sector.getBoulders()) {
+            for (int i = 0; i < result.length; i++) {
+                result[i] = boulder.getId();
+            }
+        }
+        return result;
     }
 
     private void initListAdapter() {

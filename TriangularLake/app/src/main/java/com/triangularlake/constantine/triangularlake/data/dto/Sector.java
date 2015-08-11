@@ -2,12 +2,15 @@ package com.triangularlake.constantine.triangularlake.data.dto;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import java.util.Collection;
 
 @DatabaseTable(tableName = ICommonDtoConstants.SECTOR_TABLE_NAME)
 public class Sector implements ICommonDtoConstants {
 
-    @DatabaseField(generatedId = false, columnName = ID)
+    @DatabaseField(id = true, canBeNull = false, generatedId = false, columnName = ID)
     private Long id;                        // id сектора
 
     @DatabaseField(columnName = MAX_GRADE)
@@ -40,8 +43,8 @@ public class Sector implements ICommonDtoConstants {
     @DatabaseField(dataType = DataType.BYTE_ARRAY, columnName = SECTOR_PHOTO)
     private byte[] sectorPhoto;             // фото (не указатель!)
 
-//    @ForeignCollectionField(eager = true)
-//    private Collection<Boulder> boulders;   // ссылка oneToMany на Boulder
+    @ForeignCollectionField(eager = true)
+    private Collection<Boulder> boulders;   // ссылка oneToMany на Boulder
 
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Region region;
@@ -52,7 +55,7 @@ public class Sector implements ICommonDtoConstants {
 
     public Sector(Long sectorId, String maxGrade, String minGrade, int problemCount, String sectorDesc,
                   String sectorDescRu, String sectorLat, String sectorLon, String sectorName,
-                  String sectorNameRu, byte[] sectorPhoto,  Region region) {
+                  String sectorNameRu, byte[] sectorPhoto,  Collection<Boulder> boulders, Region region) {
         this.id = sectorId;
         this.maxGrade = maxGrade;
         this.minGrade = minGrade;
@@ -64,7 +67,7 @@ public class Sector implements ICommonDtoConstants {
         this.sectorName = sectorName;
         this.sectorNameRu = sectorNameRu;
         this.sectorPhoto = sectorPhoto;
-//        this.boulders = boulders;
+        this.boulders = boulders;
         this.region = region;
     }
 
@@ -156,13 +159,13 @@ public class Sector implements ICommonDtoConstants {
         this.sectorPhoto = sectorPhoto;
     }
 
-//    public Collection<Boulder> getBoulders() {
-//        return boulders;
-//    }
-//
-//    public void setBoulders(Collection<Boulder> boulders) {
-//        this.boulders = boulders;
-//    }
+    public Collection<Boulder> getBoulders() {
+        return boulders;
+    }
+
+    public void setBoulders(Collection<Boulder> boulders) {
+        this.boulders = boulders;
+    }
 
     public Region getRegion() {
         return region;

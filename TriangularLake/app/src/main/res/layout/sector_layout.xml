@@ -83,17 +83,18 @@
 
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/sector_layout_sector_boulders"
+        <FrameLayout
+            android:id="@+id/sector_layout_sector_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sector_layout_description_layout" />
+            android:layout_below="@+id/sector_layout_description_layout"
+            android:scrollbars="vertical" />
 
         <LinearLayout
             android:id="@+id/sector_layout_footer_menu"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_below="@+id/sector_layout_sector_boulders"
+            android:layout_below="@+id/sector_layout_sector_container"
             android:background="@color/grey"
             android:orientation="vertical"
             android:padding="10dp">

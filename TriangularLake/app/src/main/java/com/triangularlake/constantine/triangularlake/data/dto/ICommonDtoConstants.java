@@ -37,7 +37,7 @@ public interface ICommonDtoConstants {
 
     // Boulder table
     String BOULDER_TABLE_NAME = "BOULDERS";
-    String BOULDER_PHOTO = "boulder_photo_id";
+    String BOULDER_PHOTO = "photo_id";
     String BOULDER_DESC = "boulder_desc";
     String BOULDER_DESC_RU = "boulder_desc_ru";
     String BOULDER_ID = "_id";
@@ -68,7 +68,7 @@ public interface ICommonDtoConstants {
     // Photo table
     String PHOTO_TABLE_NAME = "PHOTOS";
     String PHOTO_ID = "_id";
-    String PHOTO_DATA = "ZPHOTODATA";
+    String PHOTO_DATA = "photo_data";
 
     // DB name and version
     String TRIANGULAR_LAKE_DB = "triangular_lake_db";
