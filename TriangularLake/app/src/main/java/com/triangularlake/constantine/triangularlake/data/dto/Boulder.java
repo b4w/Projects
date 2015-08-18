@@ -33,8 +33,8 @@ public class Boulder implements ICommonDtoConstants {
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Photo photo;                            // ссылка oneToOne на Photo (id Photo)
 
-//    @ForeignCollectionField(eager = true)
-//    private Collection<Problem> problems;           // ссылка oneToMany на Problems
+    @ForeignCollectionField(eager = true)
+    private Collection<Problem> problems;           // ссылка oneToMany на Problems
 
 //    @ForeignCollectionField(eager = true)
 //    private Collection<Side> sides;                 // ссылка oneToMany на Side
@@ -47,9 +47,8 @@ public class Boulder implements ICommonDtoConstants {
     }
 
     public Boulder(Long id, String boulderDesc, String boulderDescRu, String boulderLat,
-                   String boulderLon, String boulderName, String boulderNameRu,
-                   Photo photo,
-//                   Collection<Problem> problems,
+                   String boulderLon, String boulderName, String boulderNameRu, Photo photo,
+                   Collection<Problem> problems,
 //                   Collection<Side> sides,
                    Sector sector) {
         this.id = id;
@@ -60,7 +59,7 @@ public class Boulder implements ICommonDtoConstants {
         this.boulderName = boulderName;
         this.boulderNameRu = boulderNameRu;
         this.photo = photo;
-//        this.problems = problems;
+        this.problems = problems;
 //        this.sides = sides;
         this.sector = sector;
     }
@@ -129,13 +128,13 @@ public class Boulder implements ICommonDtoConstants {
         this.photo = photo;
     }
 
-//    public Collection<Problem> getProblems() {
-//        return problems;
-//    }
-//
-//    public void setProblems(Collection<Problem> problems) {
-//        this.problems = problems;
-//    }
+    public Collection<Problem> getProblems() {
+        return problems;
+    }
+
+    public void setProblems(Collection<Problem> problems) {
+        this.problems = problems;
+    }
 //
 //    public Collection<Side> getSides() {
 //        return sides;

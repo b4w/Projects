@@ -17,7 +17,7 @@ import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.Boulder;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Sector;
-import com.triangularlake.constantine.triangularlake.data.helpers.OrmHelper;
+import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
 
 import java.sql.SQLException;
 
@@ -31,7 +31,6 @@ public class SectorsActivity extends Activity {
     private long regionId;
 
     private CommonDao commonDao;
-    private OrmHelper ormHelper;
     private OrmCursorLoaderCallback<Sector, Long> sectorLoaderCallback;
 
     @Override
@@ -63,10 +62,11 @@ public class SectorsActivity extends Activity {
         sectorLayoutListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO: заменить на singleton (pogo) для того что бы не доставать каждый раз данные из БД
                 Sector sector = sectorListAdapter.getTypedItem(position);
                 Intent intent = new Intent(getApplicationContext(), SectorActivity.class);
-                intent.putExtra("sectorId", sector.getId());
-                intent.putExtra("boulderNumbers", getCollectedBoulderNumbers(sector));
+                intent.putExtra(ICommonDtoConstants.SECTOR_ID, sector.getId());
+                intent.putExtra(ICommonDtoConstants.BOULDER_NUMBERS, getCollectedBoulderNumbers(sector));
                 startActivity(intent);
             }
         });
@@ -93,7 +93,7 @@ public class SectorsActivity extends Activity {
         Log.d(TAG, "initOrmCursorLoader() start");
         sectorLayoutListView.setAdapter(sectorListAdapter);
         try {
-            commonDao = getOrmHelper().getDaoByClass(Sector.class);
+            commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Sector.class);
             if (commonDao != null) {
                 PreparedQuery query = commonDao.queryBuilder().where().eq(RegionsActivity.REGION_ID, regionId).prepare();
                 sectorLoaderCallback = new OrmCursorLoaderCallback<Sector, Long>(getApplicationContext(),
@@ -105,15 +105,4 @@ public class SectorsActivity extends Activity {
         }
         Log.d(TAG, "initOrmCursorLoader() done");
     }
-
-    public OrmHelper getOrmHelper() {
-        Log.d(TAG, "getOrmHelper() start");
-        if (ormHelper == null) {
-            ormHelper = new OrmHelper(getApplicationContext(), ICommonDtoConstants.TRIANGULAR_LAKE_DB,
-                    ICommonDtoConstants.TRIANGULAR_LAKE_DB_VERSION);
-        }
-        Log.d(TAG, "getOrmHelper() done");
-        return ormHelper;
-    }
-
 }

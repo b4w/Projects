@@ -22,7 +22,7 @@
             android:layout_marginTop="97dp"
             android:text="@string/sector"
             android:textColor="@color/text_main"
-            android:textSize="30sp" />
+            android:textSize="25sp" />
 
         <TextView
             android:id="@+id/sector_layout_sector_name"
@@ -32,19 +32,19 @@
             android:layout_toEndOf="@+id/sector_layout_sector_label"
             android:layout_toRightOf="@+id/sector_layout_sector_label"
             android:textColor="@color/text_main"
-            android:textSize="30sp" />
+            android:textSize="23sp" />
 
         <TextView
             android:id="@+id/sector_layout_look_map"
             android:layout_width="wrap_content"
-            android:layout_height="25sp"
+            android:layout_height="30sp"
             android:layout_below="@+id/sector_layout_sector_label"
             android:layout_marginLeft="100dp"
             android:layout_marginStart="100dp"
             android:layout_marginTop="45dp"
             android:text="@string/look_on_map_upper"
             android:textColor="@color/text_main"
-            android:textSize="25sp" />
+            android:textSize="23sp" />
 
 
         <LinearLayout
@@ -61,7 +61,7 @@
                 android:layout_height="30dp"
                 android:text="@string/description_upper"
                 android:textColor="@color/background"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -78,7 +78,7 @@
                 android:layout_height="30dp"
                 android:text="@string/stones_upper"
                 android:textColor="@color/background"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

@@ -11,6 +11,7 @@ import com.j256.ormlite.table.TableUtils;
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.Boulder;
 import com.triangularlake.constantine.triangularlake.data.dto.Photo;
+import com.triangularlake.constantine.triangularlake.data.dto.Problem;
 import com.triangularlake.constantine.triangularlake.data.dto.Region;
 import com.triangularlake.constantine.triangularlake.data.dto.Sector;
 
@@ -26,7 +27,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements ICommonOrmHelp
             Sector.class,
             Region.class,
             Boulder.class,
-            Photo.class
+            Photo.class,
+            Problem.class
     };
 
     public OrmHelper(Context context, String databaseName, int databaseVersion) {
@@ -108,6 +110,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements ICommonOrmHelp
             return getDaoByNum(Boulder.class, BOULDER_DAO_NUMBER);
         } else if (classInstance.equals(Photo.class)) {
             return getDaoByNum(Photo.class, PHOTO_DAO_NUMBER);
+        } else if (classInstance.equals(Problem.class)) {
+            return getDaoByNum(Problem.class, PROBLEM_DAO_NUMBER);
         }
         return null;
     }

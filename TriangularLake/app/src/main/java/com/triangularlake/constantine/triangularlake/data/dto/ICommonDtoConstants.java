@@ -4,13 +4,9 @@ public interface ICommonDtoConstants {
 
     // Common
     String ID = "_id";
-    String Z_ENT = "Z_ENT";
-    String Z_OPT = "Z_OPT";
-    String Z_IN_REGION = "ZINREGION";
-    String Z_IN_SECTOR = "ZINSECTOR";
-    String Z_IN_BOULDER = "ZINBOULDER";
-    String Z_IN_SIDE = "ZINSIDE";
-    String Z_IN_PROBLEM = "ZINPROBLEM";
+    String BOULDER_ID = "boulder_id";
+    String SECTOR_ID = "sector_id";
+    String BOULDER_NUMBERS = "boulderNumbers";
 
     // REGION table
     String REGION_TABLE_NAME = "REGIONS";
@@ -28,7 +24,6 @@ public interface ICommonDtoConstants {
     String MIN_GRADE = "min_grade";
     String SECTOR_DESC = "sector_desc";
     String SECTOR_DESC_RU = "sector_desc_ru";
-    String SECTOR_ID = "_id";
     String SECTOR_LAT = "sector_lat";
     String SECTOR_LON = "sector_lon";
     String SECTOR_NAME = "sector_name";
@@ -37,10 +32,8 @@ public interface ICommonDtoConstants {
 
     // Boulder table
     String BOULDER_TABLE_NAME = "BOULDERS";
-    String BOULDER_PHOTO = "photo_id";
     String BOULDER_DESC = "boulder_desc";
     String BOULDER_DESC_RU = "boulder_desc_ru";
-    String BOULDER_ID = "_id";
     String BOULDER_LAT = "boulder_lat";
     String BOULDER_LON = "boulder_lon";
     String BOULDER_NAME = "boulder_name";
@@ -48,7 +41,6 @@ public interface ICommonDtoConstants {
 
     // Side table
     String SIDE_TABLE_NAME = "SIDES";
-    String SIDE_ID = "_id";
     String SIDE_PHOTO = "side_photo";
 
     // Problem table
@@ -56,18 +48,15 @@ public interface ICommonDtoConstants {
     String FRIEND_HELP = "friend_help";
     String PAD_COUNT = "pad_count";
     String WARNING_LEVEL = "warning_level";
-    String PROBLEM_PHOTO = "problem_photo";
     String PROBLEM_DESC = "problem_desc";
     String PROBLEM_DESC_RU = "problem_desc_ru";
     String PROBLEM_GRADE = "problem_grade";
-    String PROBLEM_ID = "_id";
     String PROBLEM_LETTER = "problem_letter";
     String PROBLEM_NAME = "problem_name";
     String PROBLEM_NAME_RU = "problem_name_ru";
 
     // Photo table
     String PHOTO_TABLE_NAME = "PHOTOS";
-    String PHOTO_ID = "_id";
     String PHOTO_DATA = "photo_data";
 
     // DB name and version
@@ -77,4 +66,5 @@ public interface ICommonDtoConstants {
     // Constants for loaders
     int SECTOR_LOADER_NUMBER = 0;
     int REGION_LOADER_NUMBER = 1;
+    int PROBLEM_LOADER_NUMBER = 2;
 }

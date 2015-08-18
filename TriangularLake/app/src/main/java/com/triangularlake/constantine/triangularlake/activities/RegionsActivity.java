@@ -16,7 +16,7 @@ import com.triangularlake.constantine.triangularlake.adapters.RegionsListAdapter
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Region;
-import com.triangularlake.constantine.triangularlake.data.helpers.OrmHelper;
+import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
 
 import java.sql.SQLException;
 
@@ -31,7 +31,6 @@ public class RegionsActivity extends Activity {
     private RegionsListAdapter regionsListAdapter;
 
     private CommonDao commonDao;
-    private OrmHelper ormHelper;
     private OrmCursorLoaderCallback<Region, Long> regionLoaderCallback;
 
     @Override
@@ -90,23 +89,11 @@ public class RegionsActivity extends Activity {
         Log.d(TAG, "initListAdapter() done");
     }
 
-
-    public OrmHelper getOrmHelper() {
-        Log.d(TAG, "getOrmHelper() start");
-        if (ormHelper == null) {
-            ormHelper = new OrmHelper(getApplicationContext(), ICommonDtoConstants.TRIANGULAR_LAKE_DB,
-                    ICommonDtoConstants.TRIANGULAR_LAKE_DB_VERSION);
-//            ormHelper.createAll();
-        }
-        Log.d(TAG, "getOrmHelper() done");
-        return ormHelper;
-    }
-
     private void initOrmCursorLoader() {
         Log.d(TAG, "initOrmCursorLoader() start");
         regionsLayoutListView.setAdapter(regionsListAdapter);
         try {
-            commonDao = getOrmHelper().getDaoByClass(Region.class);
+            commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Region.class);
             if (commonDao != null) {
                 PreparedQuery query = commonDao.queryBuilder().prepare();
                 regionLoaderCallback = new OrmCursorLoaderCallback<Region, Long>(getApplicationContext(),
