@@ -17,15 +17,12 @@ import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Region;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
+import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
 
 import java.sql.SQLException;
 
 public class RegionsActivity extends Activity {
     private static final String TAG = RegionsActivity.class.getSimpleName();
-
-    public static final String REGION_LIETLAHTI = "LIETLAHTI";
-    public static final String REGION_TRIANGULAR_LAKE = "TRIANGULAR LAKE";
-    public static final String REGION_ID = "region_id";
 
     private ListView regionsLayoutListView;
     private RegionsListAdapter regionsListAdapter;
@@ -68,16 +65,19 @@ public class RegionsActivity extends Activity {
                 Intent intent = null;
 
                 switch (region.getRegionName()) {
-                    case REGION_LIETLAHTI:
+                    case IStringConstants.REGION_LIETLAHTI:
                         intent = new Intent(getApplicationContext(), SectorsActivity.class);
+                        intent.putExtra(IStringConstants.SECTOR_NAME, getString(R.string.lietlahti));
                         break;
-                    case REGION_TRIANGULAR_LAKE:
+                    case IStringConstants.REGION_TRIANGULAR_LAKE:
                         intent = new Intent(getApplicationContext(), SectorsActivity.class);
+                        intent.putExtra(IStringConstants.SECTOR_NAME, getString(R.string.triangular_lake));
                         break;
                 }
 
-                intent.putExtra(REGION_ID, region.getId());
+                intent.putExtra(IStringConstants.REGION_ID, region.getId());
                 startActivity(intent);
+                overridePendingTransition(R.anim.right_in, R.anim.left_out);
             }
         });
         Log.d(TAG, "initListeners() done");

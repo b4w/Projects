@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="lietlahti">Lietlahti</string>
+    <string name="triangular_lake">Triangular lake</string>
+    <string name="app_name">Triangular lake</string>
 </resources>

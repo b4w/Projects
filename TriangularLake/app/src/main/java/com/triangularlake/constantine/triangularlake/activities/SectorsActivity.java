@@ -1,13 +1,13 @@
 package com.triangularlake.constantine.triangularlake.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.j256.ormlite.android.loadercallback.OrmCursorLoaderCallback;
 import com.j256.ormlite.stmt.PreparedQuery;
@@ -18,17 +18,20 @@ import com.triangularlake.constantine.triangularlake.data.dto.Boulder;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Sector;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
+import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
 
 import java.sql.SQLException;
 
-public class SectorsActivity extends Activity {
+public class SectorsActivity extends AppCompatActivity {
 
     private static final String TAG = SectorsActivity.class.getSimpleName();
 
     private ListView sectorLayoutListView;
     private SectorsListAdapter sectorListAdapter;
+    private Toolbar toolbar;
 
     private long regionId;
+    private String sectorName;
 
     private CommonDao commonDao;
     private OrmCursorLoaderCallback<Sector, Long> sectorLoaderCallback;
@@ -41,13 +44,39 @@ public class SectorsActivity extends Activity {
         initInputValues();
         initXmlFields();
         initListeners();
+        initToolbar();
         initListAdapter();
         initOrmCursorLoader();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.right_out, R.anim.left_in);
+    }
+
+    private void initToolbar() {
+        Log.d(TAG, "initToolbar() start");
+        toolbar = (Toolbar) findViewById(R.id.sectors_layout_toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(sectorName);
+//            toolbar.setTitleTextColor(R.color.text_main);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
+        Log.d(TAG, "initToolbar() done");
+    }
+
     private void initInputValues() {
         Log.d(TAG, "initInputValues() start");
-        regionId = getIntent().getExtras().getLong(RegionsActivity.REGION_ID);
+        regionId = getIntent().getExtras().getLong(IStringConstants.REGION_ID);
+        sectorName = getIntent().getExtras().getString(IStringConstants.SECTOR_NAME);
         Log.d(TAG, "initInputValues() done");
     }
 
@@ -68,6 +97,7 @@ public class SectorsActivity extends Activity {
                 intent.putExtra(ICommonDtoConstants.SECTOR_ID, sector.getId());
                 intent.putExtra(ICommonDtoConstants.BOULDER_NUMBERS, getCollectedBoulderNumbers(sector));
                 startActivity(intent);
+                overridePendingTransition(R.anim.right_in, R.anim.left_out);
             }
         });
         Log.d(TAG, "initListeners() done");
@@ -95,7 +125,7 @@ public class SectorsActivity extends Activity {
         try {
             commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Sector.class);
             if (commonDao != null) {
-                PreparedQuery query = commonDao.queryBuilder().where().eq(RegionsActivity.REGION_ID, regionId).prepare();
+                PreparedQuery query = commonDao.queryBuilder().where().eq(IStringConstants.REGION_ID, regionId).prepare();
                 sectorLoaderCallback = new OrmCursorLoaderCallback<Sector, Long>(getApplicationContext(),
                         commonDao, query, sectorListAdapter);
                 getLoaderManager().initLoader(ICommonDtoConstants.SECTOR_LOADER_NUMBER, null, sectorLoaderCallback);

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="lietlahti">Лиетлахти</string>
+    <string name="triangular_lake">Озеро Треугольное</string>
+    <string name="app_name">Озеро Треугольное</string>
 
 </resources>

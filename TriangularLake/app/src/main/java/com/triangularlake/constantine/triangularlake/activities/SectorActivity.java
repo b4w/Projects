@@ -1,11 +1,12 @@
 package com.triangularlake.constantine.triangularlake.activities;
 
-import android.app.Activity;
 import android.app.FragmentManager;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,7 +20,7 @@ import com.triangularlake.constantine.triangularlake.fragments.SectorBoulderFrag
 import java.sql.SQLException;
 import java.util.List;
 
-public class SectorActivity extends Activity {
+public class SectorActivity extends AppCompatActivity {
     private static final String TAG = SectorActivity.class.getSimpleName();
 
     private ImageView sectorPhoto;
@@ -28,6 +29,9 @@ public class SectorActivity extends Activity {
 
     private long sectorId;
     private long[] boulderNumbers;
+
+    private Toolbar toolbar;
+    private String labelSectorName;
 
     private SectorBoulderFragment sectorBoulderFragment;
 
@@ -40,9 +44,34 @@ public class SectorActivity extends Activity {
         initSectorStoneFragments();
         initXmlFields();
         loadData();
+        initToolbar();
         initListeners();
 //        initListAdapter();
 //        initOrmCursorLoader();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.right_out, R.anim.left_in);
+    }
+
+    private void initToolbar() {
+        Log.d(TAG, "initToolbar() start");
+        toolbar = (Toolbar) findViewById(R.id.sector_layout_toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(labelSectorName);
+//            toolbar.setTitleTextColor(R.color.background_material_light);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
+        Log.d(TAG, "initToolbar() done");
     }
 
     private void initInputValues() {
@@ -63,6 +92,7 @@ public class SectorActivity extends Activity {
                 sectorPhoto.setImageBitmap(BitmapFactory.decodeByteArray(sector.getSectorPhoto(), 0, sector.getSectorPhoto().length));
                 // TODO: добавить поддержку локали
                 sectorName.setText("<<" + sector.getSectorName() + ">>");
+                labelSectorName = sector.getSectorName();
                 description.setText(sector.getSectorDesc());
             }
         } catch (SQLException e) {

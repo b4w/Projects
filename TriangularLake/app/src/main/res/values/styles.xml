@@ -1,8 +1,15 @@
-    <resources>
+<resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+    </style>
+
+    <!-- Стили для Toolbar-а -->
+    <style name="GalaxyZooThemeToolbarDarkOverflow" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColorPrimary">@color/text_main</item>
+        <item name="actionMenuTextColor">@color/text_main</item>
+        <item name="android:textColorSecondary">@color/text_main</item>
     </style>
 
 </resources>
