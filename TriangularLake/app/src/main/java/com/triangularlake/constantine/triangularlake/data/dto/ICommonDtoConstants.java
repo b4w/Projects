@@ -10,7 +10,6 @@ public interface ICommonDtoConstants {
 
     // REGION table
     String REGION_TABLE_NAME = "REGIONS";
-    String REGION_ID = "_id";
     String REGION_LAT = "region_lat";
     String REGION_LON = "region_lon";
     String REGION_NAME = "region_name";

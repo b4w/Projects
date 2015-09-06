@@ -10,4 +10,14 @@
     <string name="look_on_map_upper">LOOK ON A MAP</string>
     <string name="lietlahti">Lietlahti</string>
     <string name="triangular_lake">Triangular lake</string>
+    <string name="error">Error</string>
+    <string name="map_upper">MAP</string>
+
+    <!--боковое меню-->
+    <string name="favorites_upper">FAVORITES</string>
+    <string name="filter_routes_upper">FILTER OF ROUTES</string>
+    <string name="search_upper">SEARCH</string>
+    <string name="information">Information</string>
+    <string name="guidebook_lower">guidebook</string>
+
 </resources>

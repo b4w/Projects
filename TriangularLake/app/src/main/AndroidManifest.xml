@@ -30,6 +30,20 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activities.FiltersActivity">
+            <intent-filter>
+                <action android:name="FiltersActivity" />
+                <category android:name="ANDROID.INTENT.CATEGORY.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activities.InformationActivity">
+            <intent-filter>
+                <action android:name="InformationActivity" />
+                <category android:name="ANDROID.INTENT.CATEGORY.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
