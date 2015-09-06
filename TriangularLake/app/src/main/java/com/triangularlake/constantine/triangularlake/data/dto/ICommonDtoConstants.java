@@ -6,11 +6,14 @@ public interface ICommonDtoConstants {
     String ID = "_id";
     String BOULDER_ID = "boulder_id";
     String SECTOR_ID = "sector_id";
-    String BOULDER_NUMBERS = "boulderNumbers";
+    String BOULDER_NUMBERS = "boulder_numbers";
+    String BOULDER_NAMES = "boulder_names";
+    String SIDE_ID = "side_id";
+    String PROBLEM_NUMBERS = "problem_numbers";
+    String PROBLEM_ID = "problem_id";
 
     // REGION table
     String REGION_TABLE_NAME = "REGIONS";
-    String REGION_ID = "_id";
     String REGION_LAT = "region_lat";
     String REGION_LON = "region_lon";
     String REGION_NAME = "region_name";

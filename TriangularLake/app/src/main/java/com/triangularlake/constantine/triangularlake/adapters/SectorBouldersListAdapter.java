@@ -82,7 +82,7 @@ public class SectorBouldersListAdapter extends OrmLiteCursorAdapter<Problem, Vie
         viewHolder.problemName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(context, "Open problem name " + ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Open problem name " + ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -43,8 +43,8 @@ public class Problem implements ICommonDtoConstants {
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Boulder boulder;                        // ссылка manyToOne на Boulder
 
-//    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
-//    private Side side;                              // ссылка manyToOne на Side
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
+    private Side side;                              // ссылка manyToOne на Side
 
     public Problem() {
         // need for ormLite
@@ -52,9 +52,7 @@ public class Problem implements ICommonDtoConstants {
 
     public Problem(Long id, boolean friendHelp, int padCount, String problemDesc, String problemDescRu,
                    String problemGrade, String problemLetter, String problemName, String problemNameRu,
-                   int warningLevel, Photo photo, Boulder boulder
-//                   Side side
-    ) {
+                   int warningLevel, Photo photo, Boulder boulder, Side side) {
         this.id = id;
         this.friendHelp = friendHelp;
         this.padCount = padCount;
@@ -66,7 +64,8 @@ public class Problem implements ICommonDtoConstants {
         this.problemNameRu = problemNameRu;
         this.warningLevel = warningLevel;
         this.photo = photo;
-//        this.boulder = boulder;
+        this.boulder = boulder;
+        this.side = side;
     }
 
     public Long getId() {
@@ -165,11 +164,11 @@ public class Problem implements ICommonDtoConstants {
         this.boulder = boulder;
     }
 
-//    public Side getSide() {
-//        return side;
-//    }
-//
-//    public void setSide(Side side) {
-//        this.side = side;
-//    }
+    public Side getSide() {
+        return side;
+    }
+
+    public void setSide(Side side) {
+        this.side = side;
+    }
 }

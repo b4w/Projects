@@ -9,5 +9,17 @@
     <string name="description_upper">ОПИСАНИЕ</string>
     <string name="stones_upper">КАМНИ</string>
     <string name="look_on_map_upper">ПОСМОТРЕТЬ НА КАРТЕ</string>
+    <string name="map_upper">КАРТА</string>
+    <string name="detailed">Подробнее</string>
+    <string name="danger">Опасность</string>
+    <string name="insurance">Страховка</string>
+    <string name="addition">Дополнительно</string>
+
+    <!--боковое меню-->
+    <string name="favorites_upper">ИЗБРАННОЕ</string>
+    <string name="filter_routes_upper">ФИЛЬТР ТРАСС</string>
+    <string name="search_upper">ПОИСК</string>
+    <string name="information">Информация</string>
+    <string name="guidebook_lower">гайдбук</string>
 
 </resources>

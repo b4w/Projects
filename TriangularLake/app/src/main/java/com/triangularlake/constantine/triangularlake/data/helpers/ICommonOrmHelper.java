@@ -7,5 +7,6 @@ public interface ICommonOrmHelper {
     int BOULDER_DAO_NUMBER = 2;
     int PHOTO_DAO_NUMBER = 3;
     int PROBLEM_DAO_NUMBER = 4;
+    int SIDE_DAO_NUMBER = 5;
 
 }

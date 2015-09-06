@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.j256.ormlite.android.loadercallback.OrmCursorLoaderCallback;
 import com.j256.ormlite.stmt.PreparedQuery;
@@ -23,7 +23,6 @@ import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstant
 import com.triangularlake.constantine.triangularlake.data.dto.Photo;
 import com.triangularlake.constantine.triangularlake.data.dto.Problem;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
-import com.triangularlake.constantine.triangularlake.data.helpers.OrmHelper;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -33,13 +32,16 @@ public class SectorBoulderFragment extends Fragment {
 
     private ImageView fragmentSectorBoulderPhoto;
     private ListView fragmentSectorBoulderProblemList;
+    private TextView fragmentSectorBoulderName;
 
-    private CommonDao photoDao;
-    private CommonDao problemDao;
+    private CommonDao commonDao;
     private SectorBouldersListAdapter sectorBouldersListAdapter;
     private OrmCursorLoaderCallback<Problem, Long> sectorBouldersLoaderCallback;
 
     private long boulderId;
+    private String boulderName;
+
+    private ISectorBoulderFragmentCallBack callBack;
 
     public static SectorBoulderFragment newInstance() {
         SectorBoulderFragment fragment = new SectorBoulderFragment();
@@ -49,6 +51,11 @@ public class SectorBoulderFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        try {
+            callBack = (ISectorBoulderFragmentCallBack) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Activity must implement ISectorBoulderFragmentCallBack.");
+        }
     }
 
     @Override
@@ -78,6 +85,7 @@ public class SectorBoulderFragment extends Fragment {
         Log.d(TAG, "initInputValues() start");
         Bundle bundle = this.getArguments();
         boulderId = bundle.getLong(ICommonDtoConstants.BOULDER_ID, 0);
+        boulderName = bundle.getString(ICommonDtoConstants.BOULDER_NAME, "");
         Log.d(TAG, "initInputValues() done");
     }
 
@@ -85,6 +93,7 @@ public class SectorBoulderFragment extends Fragment {
         Log.d(TAG, "initXmlFields() start");
         fragmentSectorBoulderPhoto = (ImageView) getActivity().findViewById(R.id.fragment_sector_boulder_photo);
         fragmentSectorBoulderProblemList = (ListView) getActivity().findViewById(R.id.fragment_sector_boulder_problem_list);
+        fragmentSectorBoulderName = (TextView) getActivity().findViewById(R.id.fragment_sector_boulder_name);
         Log.d(TAG, "initXmlFields() done");
     }
 
@@ -93,7 +102,7 @@ public class SectorBoulderFragment extends Fragment {
         fragmentSectorBoulderPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Open boulder id = " + boulderId, Toast.LENGTH_SHORT).show();
+                callBack.openChosenBoulder(boulderId, boulderName);
             }
         });
         Log.d(TAG, "initListeners() done");
@@ -101,13 +110,14 @@ public class SectorBoulderFragment extends Fragment {
 
     private void loadDataFromDB() {
         Log.d(TAG, "loadDataFromDB() start");
+        fragmentSectorBoulderName.setText(boulderName);
         try {
-            photoDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Photo.class);
-            List<Photo> photos = photoDao.queryForEq(ICommonDtoConstants.BOULDER_ID, boulderId);
+            commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Photo.class);
+            List<Photo> photos = commonDao.queryForEq(ICommonDtoConstants.BOULDER_ID, boulderId);
             Bitmap bitmap = BitmapFactory.decodeByteArray(photos.get(0).getPhotoData(), 0, photos.get(0).getPhotoData().length);
             fragmentSectorBoulderPhoto.setImageBitmap(bitmap);
         } catch (SQLException e) {
-
+            Log.e(TAG, "SectorBoulderFragment loadDataFromDB() Error! " + e.getMessage());
         }
         Log.d(TAG, "loadDataFromDB() done");
     }
@@ -121,17 +131,22 @@ public class SectorBoulderFragment extends Fragment {
     private void initOrmCursorLoader() {
         Log.d(TAG, "initOrmCursorLoader() start");
         fragmentSectorBoulderProblemList.setAdapter(sectorBouldersListAdapter);
+        fragmentSectorBoulderProblemList.setScrollContainer(false);
         try {
-            problemDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
-            if (problemDao != null) {
-                PreparedQuery query = problemDao.queryBuilder().where().eq(ICommonDtoConstants.BOULDER_ID, boulderId).prepare();
+            commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
+            if (commonDao != null) {
+                PreparedQuery query = commonDao.queryBuilder().where().eq(ICommonDtoConstants.BOULDER_ID, boulderId).prepare();
                 sectorBouldersLoaderCallback = new OrmCursorLoaderCallback<Problem, Long>(getActivity(),
-                        problemDao, query, sectorBouldersListAdapter);
+                        commonDao, query, sectorBouldersListAdapter);
                 getLoaderManager().initLoader(ICommonDtoConstants.PROBLEM_LOADER_NUMBER, null, sectorBouldersLoaderCallback);
             }
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
         Log.d(TAG, "initOrmCursorLoader() done");
+    }
+
+    public interface ISectorBoulderFragmentCallBack {
+        void openChosenBoulder(long boulderId, String boulderName);
     }
 }

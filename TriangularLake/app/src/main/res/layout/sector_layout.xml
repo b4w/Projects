@@ -55,7 +55,7 @@
             <LinearLayout
                 android:id="@+id/sector_layout_description_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/sector_layout_sector_photo"
                 android:background="@color/text_main"
                 android:orientation="vertical"
@@ -88,34 +88,17 @@
 
             </LinearLayout>
 
-            <FrameLayout
+            <LinearLayout
                 android:id="@+id/sector_layout_sector_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/sector_layout_description_layout"
-                android:scrollbars="vertical" />
+                android:layout_below="@id/sector_layout_description_layout"
+                android:scrollbars="vertical"
+                android:orientation="vertical"/>
 
-            <LinearLayout
-                android:id="@+id/sector_layout_footer_menu"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_below="@+id/sector_layout_sector_container"
-                android:background="@color/grey"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="25sp"
-                    android:layout_below="@+id/sector_layout_sector_label"
-                    android:layout_marginLeft="70dp"
-                    android:layout_marginStart="70dp"
-                    android:layout_marginTop="30dp"
-                    android:text="@string/look_on_map_upper"
-                    android:textColor="@color/background"
-                    android:textSize="25sp" />
-
-            </LinearLayout>
+            <include
+                android:id="@+id/sector_layout_buttons_layout"
+                layout="@layout/buttons_layout" />
 
         </RelativeLayout>
     </ScrollView>

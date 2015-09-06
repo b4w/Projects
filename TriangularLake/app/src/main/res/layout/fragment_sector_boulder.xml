@@ -7,14 +7,41 @@
     <ImageView
         android:id="@+id/fragment_sector_boulder_photo"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:src="@drawable/triangular" />
+        android:layout_height="260dp"/>
+
+    <TextView
+        android:id="@+id/fragment_sector_boulder_name"
+        android:layout_width="230dp"
+        android:layout_height="20dp"
+        android:layout_above="@+id/fragment_sector_boulder_problem_list"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/text_main" />
+
+    <TextView
+        android:id="@+id/detaled_text_view"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:layout_above="@+id/fragment_sector_boulder_problem_list"
+        android:layout_alignParentRight="true"
+        android:text="@string/detailed"
+        android:textColor="@color/text_main" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_above="@+id/fragment_sector_boulder_problem_list"
+        android:layout_alignEnd="@id/detaled_text_view"
+        android:layout_alignRight="@id/detaled_text_view"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/region_circle" />
 
     <ListView
         android:id="@+id/fragment_sector_boulder_problem_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fragment_sector_boulder_photo"
+        android:layout_height="150dp"
+        android:layout_below="@id/fragment_sector_boulder_photo"
         android:descendantFocusability="beforeDescendants" />
 
 </RelativeLayout>

@@ -9,5 +9,17 @@
     <string name="description_upper">DESCRIPTION</string>
     <string name="stones_upper">STONES</string>
     <string name="look_on_map_upper">LOOK ON A MAP</string>
+    <string name="map_upper">MAP</string>
+    <string name="detailed">Detailed</string>
+    <string name="danger">Danger</string>
+    <string name="insurance">Insurance</string>
+    <string name="addition">Addition</string>
+
+    <!--боковое меню-->
+    <string name="favorites_upper">FAVORITES</string>
+    <string name="filter_routes_upper">FILTER OF ROUTES</string>
+    <string name="search_upper">SEARCH</string>
+    <string name="information">Information</string>
+    <string name="guidebook_lower">guidebook</string>
 
 </resources>

@@ -14,6 +14,7 @@ public enum OrmConnect {
         if (ormHelper == null) {
             ormHelper = new OrmHelper(context, ICommonDtoConstants.TRIANGULAR_LAKE_DB,
                     ICommonDtoConstants.TRIANGULAR_LAKE_DB_VERSION);
+            ormHelper.checkDatabase();
         }
         return ormHelper;
     }
