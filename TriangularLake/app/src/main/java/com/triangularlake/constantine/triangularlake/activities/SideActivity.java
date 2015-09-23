@@ -1,10 +1,10 @@
 package com.triangularlake.constantine.triangularlake.activities;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,16 +18,16 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.triangularlake.constantine.triangularlake.R;
+import com.triangularlake.constantine.triangularlake.adapters.ProblemsPagerAdapter;
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Problem;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
-import com.triangularlake.constantine.triangularlake.fragments.SideFragment;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +36,9 @@ public class SideActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private Drawer navigationDrawer;
+    private ViewPager sideLayoutContainerViewPager;
+
+    private PagerAdapter problemsPagerAdapter;
 
     private long boulderId;
     private String boulderName;
@@ -51,7 +54,6 @@ public class SideActivity extends AppCompatActivity {
         initXmlFields();
         initToolbar();
         loadData();
-        initFragment();
         initNavigationDrawer();
         initListeners();
     }
@@ -65,26 +67,7 @@ public class SideActivity extends AppCompatActivity {
 
     private void initXmlFields() {
         Log.d(TAG, "initXmlFields() start");
-        try {
-            CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Problem.class);
-            if (commonDao != null) {
-                final List<Problem> problems = commonDao.queryForEq(ICommonDtoConstants.BOULDER_ID, boulderId);
-                sideProblemsMap = new HashMap<>();
-                List<Long> listProblems;
-                for (Problem problem : problems) {
-                    if (!sideProblemsMap.containsKey(problem.getSide().getId())) {
-                        listProblems = new ArrayList<>();
-                        listProblems.add(problem.getId());
-                        sideProblemsMap.put(problem.getSide().getId(), listProblems);
-                    } else {
-                        listProblems = sideProblemsMap.get(problem.getSide().getId());
-                        listProblems.add(problem.getId());
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, "SideActivity initXmlFields() Error! " + e.getMessage());
-        }
+        sideLayoutContainerViewPager = (ViewPager) findViewById(R.id.side_layout_container_view_pager);
         Log.d(TAG, "initXmlFields() done");
     }
 
@@ -107,34 +90,30 @@ public class SideActivity extends AppCompatActivity {
 
     private void loadData() {
         Log.d(TAG, "loadData() start");
-
-
-        Log.d(TAG, "loadData() done");
-    }
-
-    private void initFragment() {
-        Log.d(TAG, "initFragment() start");
-        FragmentManager fragmentManager = getFragmentManager();
-        Fragment fragment = SideFragment.newInstance();
-        Bundle bundle = new Bundle();
-
-        //TODO: подумать и заменить на pojo???
-        for (Long id : sideProblemsMap.keySet()) {
-            bundle.putLong(ICommonDtoConstants.SIDE_ID, id);
-
-            List<Long> longs = sideProblemsMap.get(id);
-            long[] array = new long[longs.size()];
-            for (int i = 0; i < longs.size(); i++) {
-                array[i] = longs.get(i);
+        try {
+            final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Problem.class);
+            if (commonDao != null) {
+                final List<Problem> problems = commonDao.queryForEq(ICommonDtoConstants.BOULDER_ID, boulderId);
+                sideProblemsMap = new LinkedHashMap<>();
+                List<Long> listProblems;
+                for (Problem problem : problems) {
+                    if (!sideProblemsMap.containsKey(problem.getSide().getId())) {
+                        listProblems = new ArrayList<>();
+                        listProblems.add(problem.getId());
+                        sideProblemsMap.put(problem.getSide().getId(), listProblems);
+                    } else {
+                        listProblems = sideProblemsMap.get(problem.getSide().getId());
+                        listProblems.add(problem.getId());
+                    }
+                }
             }
-            bundle.putLongArray(ICommonDtoConstants.PROBLEM_NUMBERS, array);
+        } catch (SQLException e) {
+            Log.e(TAG, "SideActivity initXmlFields() Error! " + e.getMessage());
         }
-        fragment.setArguments(bundle);
 
-        fragmentManager.beginTransaction()
-                .add(R.id.side_layout_container, fragment)
-                .commit();
-        Log.d(TAG, "initFragment() done");
+        problemsPagerAdapter = new ProblemsPagerAdapter(getSupportFragmentManager(), sideProblemsMap);
+        sideLayoutContainerViewPager.setAdapter(problemsPagerAdapter);
+        Log.d(TAG, "loadData() done");
     }
 
     /**

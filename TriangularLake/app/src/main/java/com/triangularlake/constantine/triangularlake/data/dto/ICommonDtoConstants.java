@@ -11,6 +11,7 @@ public interface ICommonDtoConstants {
     String SIDE_ID = "side_id";
     String PROBLEM_NUMBERS = "problem_numbers";
     String PROBLEM_ID = "problem_id";
+    String SECTOR_DESCRIPTION = "sector_description";
 
     // REGION table
     String REGION_TABLE_NAME = "REGIONS";

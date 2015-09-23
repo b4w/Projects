@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/sector_boulder_layout_photo"
+        android:layout_width="match_parent"
+        android:layout_height="260dp" />
+
+    <TextView
+        android:id="@+id/sector_boulder_layout_name"
+        android:layout_width="230dp"
+        android:layout_height="20dp"
+        android:layout_above="@+id/sector_boulder_layout_problem_names"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/text_main"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sector_boulder_layout_detailed"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:layout_above="@+id/sector_boulder_layout_problem_names"
+        android:layout_alignParentRight="true"
+        android:text="@string/detailed"
+        android:textColor="@color/text_main"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_above="@+id/sector_boulder_layout_problem_names"
+        android:layout_alignEnd="@id/sector_boulder_layout_detailed"
+        android:layout_alignRight="@id/sector_boulder_layout_detailed"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/region_circle" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/sector_boulder_layout_problem_names"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sector_boulder_layout_photo" />
+
+</RelativeLayout>

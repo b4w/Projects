@@ -39,7 +39,7 @@ public class RegionsListAdapter extends OrmLiteCursorAdapter<Region, View> {
         viewHolder.sectorsLabel.setText(StringUtils.getSectorLabelOnLanguage());
         // подумать насчет picasso для кеширования изображений
         if (region.getRegionPhoto() != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(region.getRegionPhoto(), 0, region.getRegionPhoto().length);
+            final Bitmap bitmap = BitmapFactory.decodeByteArray(region.getRegionPhoto(), 0, region.getRegionPhoto().length);
             viewHolder.regionPhoto.setImageBitmap(bitmap);
         }
     }

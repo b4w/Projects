@@ -20,7 +20,7 @@ public class SectorsCache {
     public static boolean isCached = false;
 
     // Singleton
-    public static class SectorCacheHolder {
+    private static class SectorCacheHolder {
         public static final SectorsCache HOLDER_INSTANCE = new SectorsCache();
     }
 
@@ -62,7 +62,7 @@ public class SectorsCache {
                     final SectorsCache sectorsCache = SectorsCache.getInstance();
                     sectorsCache.lietlahtiSectors = commonDao.queryForEq(IStringConstants.REGION_ID, 1);
                     sectorsCache.triangularSectors = commonDao.queryForEq(IStringConstants.REGION_ID, 2);
-                    sectorsCache.isCached = true;
+                    isCached = true;
                 }
             } catch (SQLException e) {
                 Log.e("SectorsCache!", "SectorCache doInBackground() Error! " +e.getMessage());

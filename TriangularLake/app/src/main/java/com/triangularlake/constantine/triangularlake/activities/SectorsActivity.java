@@ -22,12 +22,12 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.SectorsListAdapter;
-import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
-import com.triangularlake.constantine.triangularlake.data.dto.Boulder;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Sector;
 import com.triangularlake.constantine.triangularlake.pojo.SectorsCache;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
+
+import java.util.Locale;
 
 public class SectorsActivity extends AppCompatActivity {
 
@@ -116,14 +116,20 @@ public class SectorsActivity extends AppCompatActivity {
         sectorLayoutListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO: заменить на singleton (pogo) для того что бы не доставать каждый раз данные из БД. Несколько раз вытаскиваю boulders!
-                // переписать на HashMap<id, names> и закешировать?
                 Sector sector = (Sector) sectorsListAdapter.getItem(position);
                 Intent intent = new Intent(getApplicationContext(), SectorActivity.class);
                 intent.putExtra(ICommonDtoConstants.SECTOR_ID, sector.getId());
-                updateBoulderNumbersAndNames(sector);
-                intent.putExtra(ICommonDtoConstants.BOULDER_NUMBERS, boulderNumbers);
-                intent.putExtra(ICommonDtoConstants.BOULDER_NAMES, boulderNames);
+                // добавление названия сектора в зависимости от локали
+                if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
+                    intent.putExtra(ICommonDtoConstants.SECTOR_NAME, sector.getSectorName());
+                    intent.putExtra(ICommonDtoConstants.SECTOR_DESCRIPTION, sector.getSectorDesc());
+                } else if (Locale.getDefault().getLanguage().equals("ru")) {
+                    intent.putExtra(ICommonDtoConstants.SECTOR_NAME, sector.getSectorNameRu());
+                    intent.putExtra(ICommonDtoConstants.SECTOR_DESCRIPTION, sector.getSectorDescRu());
+                } else {
+                    intent.putExtra(ICommonDtoConstants.SECTOR_NAME, sector.getSectorName());
+                    intent.putExtra(ICommonDtoConstants.SECTOR_DESCRIPTION, sector.getSectorDesc());
+                }
                 startActivity(intent);
                 overridePendingTransition(R.anim.right_in, R.anim.left_out);
             }
@@ -281,18 +287,6 @@ public class SectorsActivity extends AppCompatActivity {
                 .build();
         Log.d(TAG, "getAccountHeader() done");
         return accountHeader;
-    }
-
-    private void updateBoulderNumbersAndNames(Sector sector) {
-        boulderNumbers = new long[sector.getBoulders().size()];
-        boulderNames = new String[sector.getBoulders().size()];
-        int i = 0;
-        for (Boulder boulder : sector.getBoulders()) {
-            boulderNumbers[i] = boulder.getId();
-            //TODO: добавлять в зависимости от локали
-            boulderNames[i] = boulder.getBoulderName();
-            i++;
-        }
     }
 
     private void initListAdapter() {

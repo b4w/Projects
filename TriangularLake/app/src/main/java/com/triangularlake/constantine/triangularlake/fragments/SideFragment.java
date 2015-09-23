@@ -1,6 +1,9 @@
 package com.triangularlake.constantine.triangularlake.fragments;
 
-import android.app.Fragment;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.ProblemsExpListAdapter;
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
@@ -21,10 +25,13 @@ import com.triangularlake.constantine.triangularlake.data.dto.Photo;
 import com.triangularlake.constantine.triangularlake.data.dto.Problem;
 import com.triangularlake.constantine.triangularlake.data.dto.Side;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
+import com.triangularlake.constantine.triangularlake.utils.DisplayUtils;
+import com.triangularlake.constantine.triangularlake.utils.MyExpandableListView;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class SideFragment extends Fragment {
     private static final String TAG = SideFragment.class.getSimpleName();
@@ -33,7 +40,7 @@ public class SideFragment extends Fragment {
     private long[] problemNumbers;
 
     private ImageView fragmentSideImageSide;
-    private ExpandableListView fragmentSideExlistView;
+    private MyExpandableListView fragmentSideExlistView;
     private ProblemsExpListAdapter problemsExpListAdapter;
     private LinearLayout fragmentSideLinearLayout;
 
@@ -55,13 +62,13 @@ public class SideFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_side, container, false);
+        initXmlFields(view);
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initXmlFields();
         initListeners();
         loadDataFromDB();
         updateProblems();
@@ -75,11 +82,11 @@ public class SideFragment extends Fragment {
         Log.d(TAG, "initInputValues() done");
     }
 
-    private void initXmlFields() {
+    private void initXmlFields(View view) {
         Log.d(TAG, "initXmlFields() start");
-//        fragmentSideImageSide = (ImageView) getActivity().findViewById(R.id.fragment_side_image_side);
-        fragmentSideExlistView = (ExpandableListView) getActivity().findViewById(R.id.fragment_side_exlist_view);
-        fragmentSideLinearLayout = (LinearLayout) getActivity().findViewById(R.id.fragment_side_linear_layout);
+//        fragmentSideImageSide = (ImageView) view.findViewById(R.id.fragment_side_image_side);
+        fragmentSideExlistView = (MyExpandableListView) view.findViewById(R.id.fragment_side_exlist_view);
+        fragmentSideLinearLayout = (LinearLayout) view.findViewById(R.id.fragment_side_linear_layout);
         Log.d(TAG, "initXmlFields() done");
     }
 
@@ -98,30 +105,8 @@ public class SideFragment extends Fragment {
 
     private void loadDataFromDB() {
         Log.d(TAG, "loadDataFromDB() start");
-        try {
-            commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Side.class);
-
-            // добавляем бэкграунд
-            List<Side> sides = commonDao.queryForEq(ICommonDtoConstants.ID, sideId);
-            ImageView backgroundImageView = new ImageView(getActivity());
-            Bitmap bitmap = BitmapFactory.decodeByteArray(sides.get(0).getSidePhoto(), 0, sides.get(0).getSidePhoto().length);
-            backgroundImageView.setImageBitmap(bitmap);
-            fragmentSideLinearLayout.addView(backgroundImageView);
-
-            // добавление фотографий линий на изображение
-            commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Photo.class);
-            List<Photo> photos = new ArrayList<>();
-            for (int i = 0; i < problemNumbers.length; i++) {
-                photos.add((Photo)commonDao.queryForId(problemNumbers[i]));
-            }
-            for (Photo item : photos) {
-                ImageView imagePhoto = new ImageView(getActivity());
-                bitmap = BitmapFactory.decodeByteArray(item.getPhotoData(), 0, item.getPhotoData().length);
-                imagePhoto.setImageBitmap(bitmap);
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, "SideFragment loadDataFromDB() Error! " + e.getMessage());
-        }
+        // загрузка фотографий
+        new AsyncLoadSidePhoto().execute();
         Log.d(TAG, "loadDataFromDB() done");
     }
 
@@ -153,5 +138,62 @@ public class SideFragment extends Fragment {
         problemsExpListAdapter = new ProblemsExpListAdapter(getActivity(), problems);
         fragmentSideExlistView.setAdapter(problemsExpListAdapter);
         Log.d(TAG, "updateProblems() done");
+    }
+
+    class AsyncLoadSidePhoto extends AsyncTask<Void, Void, Bitmap> {
+
+        private Bitmap resultBitmap;
+
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            try {
+                commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Side.class);
+
+                // разрешение экрана
+                final DisplayUtils displayUtils = DisplayUtils.getInstance();
+                displayUtils.updateDisplaySizes(getActivity());
+
+                final List<Side> sides = commonDao.queryForEq(ICommonDtoConstants.ID, sideId);
+
+                // добавляем бэкграунд изображение
+                final Bitmap backgroundBitmap = Glide.with(getActivity())
+                        .load(sides.get(0).getSidePhoto())
+                        .asBitmap()
+//                    .override(displayUtils.getDisplayWidth(), displayUtils.getDisplayHeight())
+//                        .centerCrop()
+                        .into(displayUtils.getDisplayWidth(), displayUtils.getDisplayHeight())
+                        .get();
+
+                resultBitmap = Bitmap.createBitmap(backgroundBitmap.getWidth(),
+                        backgroundBitmap.getHeight(),
+                        backgroundBitmap.getConfig());
+
+                Canvas canvas = new Canvas(resultBitmap);
+                canvas.drawBitmap(backgroundBitmap, new Matrix(), null);
+
+                // добавление фотографий линий на изображение
+                commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Photo.class);
+                final List<Photo> photos = new ArrayList<>();
+                for (int i = 0; i < problemNumbers.length; i++) {
+                    photos.add((Photo) commonDao.queryForId(problemNumbers[i]));
+                }
+                for (Photo item : photos) {
+                    final Bitmap bitmap = BitmapFactory.decodeByteArray(item.getPhotoData(), 0, item.getPhotoData().length);
+                    canvas.drawBitmap(bitmap, 0, 0, null);
+                }
+
+            } catch (SQLException | InterruptedException | ExecutionException e) {
+                Log.e(TAG, "SideFragment loadDataFromDB() Error! " + e.getMessage());
+            }
+            return resultBitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            ImageView backgroundImageView = new ImageView(getActivity());
+            backgroundImageView.setImageBitmap(bitmap);
+            fragmentSideLinearLayout.addView(backgroundImageView);
+        }
     }
 }

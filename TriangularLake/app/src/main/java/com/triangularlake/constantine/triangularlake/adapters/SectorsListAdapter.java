@@ -94,13 +94,14 @@ public class SectorsListAdapter extends BaseAdapter {
             viewHolder.sectorName.setText("<<" + sector.getSectorName() + ">>");
         }
         if (sector.getSectorPhoto() != null) {
-//            Glide.with(context)
-//                    .load(sector.getSectorPhoto())
-//                    .asBitmap()
-//                    .animate(android.R.anim.fade_in)
-//                    .into(viewHolder.sectorPhoto);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(sector.getSectorPhoto(), 0, sector.getSectorPhoto().length);
-            viewHolder.sectorPhoto.setImageBitmap(bitmap);
+            // TODO: иногда в этом месте падает с OutOfMemory
+            Glide.with(context)
+                    .load(sector.getSectorPhoto())
+                    .asBitmap()
+                    .animate(android.R.anim.fade_in)
+                    .into(viewHolder.sectorPhoto);
+//            final Bitmap bitmap = BitmapFactory.decodeByteArray(sector.getSectorPhoto(), 0, sector.getSectorPhoto().length);
+//            viewHolder.sectorPhoto.setImageBitmap(bitmap);
         }
         viewHolder.maxGrade.setText(sector.getMaxGrade());
         viewHolder.minGrade.setText(sector.getMinGrade());

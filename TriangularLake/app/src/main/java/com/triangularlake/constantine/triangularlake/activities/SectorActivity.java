@@ -1,11 +1,12 @@
 package com.triangularlake.constantine.triangularlake.activities;
 
-import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,36 +23,34 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.triangularlake.constantine.triangularlake.R;
-import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
+import com.triangularlake.constantine.triangularlake.adapters.SectorBouldersAdapter;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
-import com.triangularlake.constantine.triangularlake.data.dto.Sector;
-import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
-import com.triangularlake.constantine.triangularlake.fragments.SectorBoulderFragment;
+import com.triangularlake.constantine.triangularlake.pojo.BoulderProblems;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
 
-import java.sql.SQLException;
+import org.solovyev.android.views.llm.DividerItemDecoration;
+import org.solovyev.android.views.llm.LinearLayoutManager;
+
 import java.util.List;
 
-public class SectorActivity extends AppCompatActivity implements SectorBoulderFragment.ISectorBoulderFragmentCallBack {
+public class SectorActivity extends AppCompatActivity implements BoulderProblems.IBoulderProblemsLoaderCallBack {
     private static final String TAG = SectorActivity.class.getSimpleName();
 
     private ImageView sectorPhoto;
     private TextView sectorName;
     private TextView description;
-
-    private long sectorId;
-    private long[] boulderNumbers;
-    private String[] boulderNames;
-
+    private RecyclerView sectorLayoutBouldersRecycleView;
     private Toolbar toolbar;
-    private String labelSectorName;
-
     private Drawer navigationDrawer;
-
     private Button buttonMap;
     private ImageButton buttonMenu;
 
-    private SectorBoulderFragment sectorBoulderFragment;
+    private Long sectorId;
+    private String labelSectorName;
+    private String sectorDescription;
+
+    private SectorBouldersAdapter sectorBouldersAdapter;
+    private BoulderProblems.IBoulderProblemsLoaderCallBack callback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +58,11 @@ public class SectorActivity extends AppCompatActivity implements SectorBoulderFr
         setContentView(R.layout.sector_layout);
 
         initInputValues();
-        initXmlFields();
-        initSectorStoneFragments();
-        initNavigationDrawer();
-        loadData();
         initToolbar();
+        initXmlFields();
+        loadData();
+        initNavigationDrawer();
         initListeners();
-//        initListAdapter();
-//        initOrmCursorLoader();
     }
 
     @Override
@@ -95,52 +91,9 @@ public class SectorActivity extends AppCompatActivity implements SectorBoulderFr
     private void initInputValues() {
         Log.d(TAG, "initInputValues() start");
         sectorId = getIntent().getExtras().getLong(ICommonDtoConstants.SECTOR_ID);
-        boulderNumbers = getIntent().getExtras().getLongArray(ICommonDtoConstants.BOULDER_NUMBERS);
-        boulderNames = getIntent().getExtras().getStringArray(ICommonDtoConstants.BOULDER_NAMES);
+        labelSectorName = getIntent().getExtras().getString(ICommonDtoConstants.SECTOR_NAME);
+        sectorDescription = getIntent().getExtras().getString(ICommonDtoConstants.SECTOR_DESCRIPTION);
         Log.d(TAG, "initInputValues() done");
-    }
-
-    private void loadData() {
-        Log.d(TAG, "loadData() start");
-        // TODO: обращение к БД в отдельном потоке?
-        try {
-            CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Sector.class);
-            if (commonDao != null) {
-                List<Sector> sectors = commonDao.queryForEq(ICommonDtoConstants.ID, sectorId);
-                Sector sector = sectors.get(0);
-                sectorPhoto.setImageBitmap(BitmapFactory.decodeByteArray(sector.getSectorPhoto(), 0, sector.getSectorPhoto().length));
-                // TODO: добавить поддержку локали
-                sectorName.setText("<<" + sector.getSectorName() + ">>");
-                labelSectorName = sector.getSectorName();
-                description.setText(sector.getSectorDesc());
-            }
-        } catch (SQLException e) {
-
-        }
-        Log.d(TAG, "loadData() done");
-    }
-
-    /**
-     * Инициализация фрагментов камней сектора.
-     */
-    private void initSectorStoneFragments() {
-        Log.d(TAG, "initSectorStoneFragments() start");
-        FragmentManager fragmentManager;
-//        TODO: подумать как упростить
-        for (long boulderId : boulderNumbers) {
-            fragmentManager = getFragmentManager();
-            sectorBoulderFragment = SectorBoulderFragment.newInstance();
-
-            Bundle bundle = new Bundle();
-            bundle.putLong(ICommonDtoConstants.BOULDER_ID, boulderId);
-            bundle.putString(ICommonDtoConstants.BOULDER_NAME, boulderNames[0]);
-            sectorBoulderFragment.setArguments(bundle);
-
-            fragmentManager.beginTransaction()
-                    .add(R.id.sector_layout_sector_container, sectorBoulderFragment, "sectorFragmentId" + boulderId)
-                    .commit();
-        }
-        Log.d(TAG, "initSectorStoneFragments() done");
     }
 
     private void initXmlFields() {
@@ -149,7 +102,21 @@ public class SectorActivity extends AppCompatActivity implements SectorBoulderFr
         sectorName = (TextView) findViewById(R.id.sector_layout_sector_name);
         description = (TextView) findViewById(R.id.sector_layout_description);
         buttonMenu = (ImageButton) findViewById(R.id.button_menu);
+        sectorLayoutBouldersRecycleView = (RecyclerView) findViewById(R.id.sector_layout_boulders_recycle_view);
         Log.d(TAG, "initXmlFields() done");
+    }
+
+    private void loadData() {
+        Log.d(TAG, "loadData() start");
+        // загрузка списка камней и проблем
+        callback = this;
+        new BoulderProblems.BoulderProblemsAsyncLoader(sectorId, getApplicationContext(), callback).execute();
+        // название сектора
+        final String sectorLabel = "<<" + labelSectorName + ">>";
+        sectorName.setText(sectorLabel);
+        // описание сектора
+        description.setText(sectorDescription);
+        Log.d(TAG, "loadData() done");
     }
 
     /**
@@ -263,18 +230,18 @@ public class SectorActivity extends AppCompatActivity implements SectorBoulderFr
         Log.d(TAG, "initListeners() done");
     }
 
-    /**
-     * Открываем выбранный камень с трассами
-     *
-     * @param boulderId
-     */
     @Override
-    public void openChosenBoulder(long boulderId, String boulderName) {
-        Log.d(TAG, "openChosenBoulder() start");
-        Intent intent = new Intent(getApplicationContext(), SideActivity.class);
-        intent.putExtra(ICommonDtoConstants.BOULDER_ID, boulderId);
-        intent.putExtra(ICommonDtoConstants.BOULDER_NAME, boulderName);
-        startActivity(intent);
-        Log.d(TAG, "openChosenBoulder() done");
+    public void callback(List<BoulderProblems> boulderProblemsList, byte[] sectorPhoto) {
+        // список камней и проблем после загрузки из БД
+        sectorBouldersAdapter = new SectorBouldersAdapter(boulderProblemsList);
+        sectorLayoutBouldersRecycleView.setHasFixedSize(true);
+        final LinearLayoutManager layoutManager = new org.solovyev.android.views.llm.LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        sectorLayoutBouldersRecycleView.addItemDecoration(new DividerItemDecoration(this, null));
+        sectorLayoutBouldersRecycleView.setLayoutManager(layoutManager);
+        sectorLayoutBouldersRecycleView.setAdapter(sectorBouldersAdapter);
+
+        // фотография сектора
+        final Bitmap bitmap = BitmapFactory.decodeByteArray(sectorPhoto, 0, sectorPhoto.length);
+        this.sectorPhoto.setImageBitmap(bitmap);
     }
 }

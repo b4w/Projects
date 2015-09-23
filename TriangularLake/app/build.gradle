@@ -26,6 +26,8 @@ dependencies {
 //    compile 'com.facebook.stetho:stetho:1.1.0'
     compile files('libs/ormlite-android.jar')
     compile files('libs/ormlite-core.jar')
+    // library for layout_height="wrap_content"
+    compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
     compile 'com.github.bumptech.glide:glide:3.6.1'
     compile('com.mikepenz:materialdrawer:4.0.3@aar') {
         transitive = true

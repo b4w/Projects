@@ -2,16 +2,16 @@ package com.triangularlake.constantine.triangularlake.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.fragments.InformationFragment;
 
-public class InformationActivity extends FragmentActivity {
+public class InformationActivity extends AppCompatActivity {
 
     private static final int NUM_PAGES = 3;
     private ViewPager viewPager;
@@ -23,7 +23,7 @@ public class InformationActivity extends FragmentActivity {
         setContentView(R.layout.activity_screen_slide);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
-        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        pagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
     }
 
@@ -36,14 +36,14 @@ public class InformationActivity extends FragmentActivity {
         }
     }
 
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return new InformationFragment();
+            return InformationFragment.newInstance(position + 1);
         }
 
         @Override
@@ -51,5 +51,4 @@ public class InformationActivity extends FragmentActivity {
             return NUM_PAGES;
         }
     }
-
 }

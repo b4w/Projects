@@ -105,7 +105,6 @@ public class ProblemsExpListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.problems_parent_list_layout, parent, false);
-//            convertView = layoutInflater.inflate(R.layout.problems_parent_list_layout, null);
         }
 
         if (isExpanded){
@@ -118,7 +117,7 @@ public class ProblemsExpListAdapter extends BaseExpandableListAdapter {
         TextView problemName = (TextView) convertView.findViewById(R.id.problems_parent_ll_problem_name);
         TextView problemGrade = (TextView) convertView.findViewById(R.id.problems_parent_ll_problem_grade);
 
-        Problem problem = (Problem)getChild(groupPosition, 0);
+        final Problem problem = (Problem)getChild(groupPosition, 0);
 
         //TODO: Добавить поддержку локали
         problemName.setText(problem.getProblemName());
@@ -142,7 +141,7 @@ public class ProblemsExpListAdapter extends BaseExpandableListAdapter {
             convertView = layoutInflater.inflate(R.layout.problems_children_list_layout, null);
         }
 
-        Problem problem = (Problem) getChild(groupPosition, childPosition);
+        final Problem problem = (Problem) getChild(groupPosition, childPosition);
 
 //        ImageView image = (ImageView) convertView.findViewById(R.id.exercises_list_layout_image);
 //

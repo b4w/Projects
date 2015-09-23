@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -8,8 +8,9 @@
     <LinearLayout
         android:id="@+id/fragment_side_linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:orientation="horizontal"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="50dp"/>
 
     <!--<ImageView-->
         <!--android:id="@+id/fragment_side_image_side"-->
@@ -17,17 +18,20 @@
         <!--android:layout_height="300dp" />-->
 
     <ImageView
+        android:id="@+id/fragment_side_line"
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:background="@color/grey"/>
+        android:background="@color/grey"
+        android:layout_below="@+id/fragment_side_linear_layout"/>
 
     <!--TODO: Разобраться с динамической высотой!!!-->
-    <ExpandableListView
+    <com.triangularlake.constantine.triangularlake.utils.MyExpandableListView
         android:id="@+id/fragment_side_exlist_view"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:indicatorLeft="250dp"
-        android:indicatorRight="300dp" />
+        android:indicatorRight="300dp"
+        android:layout_below="@+id/fragment_side_line"/>
 
-</LinearLayout>
+</RelativeLayout>

@@ -12,15 +12,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <FrameLayout
-                android:id="@+id/side_layout_container"
+            <com.triangularlake.constantine.triangularlake.utils.MyViewPager
+                android:id="@+id/side_layout_container_view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/side_layout_container"
+                android:layout_below="@+id/side_layout_container_view_pager"
                 android:background="@color/grey"
                 android:padding="10dp">
 
@@ -35,8 +35,8 @@
                     android:id="@+id/side_layout_coordinate"
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:background="@color/grey"
-                    android:layout_below="@id/side_layout_coordinate_label"/>
+                    android:layout_below="@id/side_layout_coordinate_label"
+                    android:background="@color/grey" />
 
                 <Button
                     android:id="@+id/side_layout_button_map"
@@ -45,10 +45,10 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
+                    android:layout_below="@+id/side_layout_coordinate"
                     android:layout_marginLeft="20dp"
                     android:background="@color/text_main"
-                    android:text="@string/look_on_map_upper"
-                    android:layout_below="@+id/side_layout_coordinate"/>
+                    android:text="@string/look_on_map_upper" />
 
                 <ImageButton
                     android:id="@+id/side_layout_button_menu"
