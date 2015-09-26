@@ -59,7 +59,7 @@ public class BoulderProblemsAdapter extends RecyclerView.Adapter<BoulderProblems
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private Context context;
+        private Context context;             // контекст активности
         private TextView name;               // название проблемы
         private ImageView favorite;          // проблема добавлена в избранное
         private TextView grade;              // категория проблемы

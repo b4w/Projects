@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.triangularlake.constantine.triangularlake.R;
-import com.triangularlake.constantine.triangularlake.fragments.FavoritesFragment;
+import com.triangularlake.constantine.triangularlake.fragments.FavouriteFragment;
 import com.triangularlake.constantine.triangularlake.fragments.FiltersFragment;
 import com.triangularlake.constantine.triangularlake.fragments.SearchFragment;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
@@ -63,7 +63,7 @@ public class FiltersActivity extends AppCompatActivity {
 
         switch (nameFilterFragment) {
             case IStringConstants.FAVORITES_FRAGMENT:
-                fragment = FavoritesFragment.newInstance();
+                fragment = FavouriteFragment.newInstance();
                 setTitleToolbar(R.string.favorites_upper);
                 break;
             case IStringConstants.FILTERS_FRAGMENT:

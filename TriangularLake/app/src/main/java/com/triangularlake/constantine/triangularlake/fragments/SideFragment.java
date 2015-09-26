@@ -142,10 +142,9 @@ public class SideFragment extends Fragment {
 
     class AsyncLoadSidePhoto extends AsyncTask<Void, Void, Bitmap> {
 
-        private Bitmap resultBitmap;
-
         @Override
         protected Bitmap doInBackground(Void... voids) {
+            Bitmap resultBitmap = null;
             try {
                 commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Side.class);
 

@@ -4,14 +4,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -21,19 +21,16 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.triangularlake.constantine.triangularlake.R;
-import com.triangularlake.constantine.triangularlake.adapters.SectorsListAdapter;
+import com.triangularlake.constantine.triangularlake.adapters.SectorsAdapter;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
-import com.triangularlake.constantine.triangularlake.data.dto.Sector;
 import com.triangularlake.constantine.triangularlake.pojo.SectorsCache;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
-
-import java.util.Locale;
 
 public class SectorsActivity extends AppCompatActivity {
 
     private static final String TAG = SectorsActivity.class.getSimpleName();
 
-    private ListView sectorLayoutListView;
+    private RecyclerView sectorsLayoutRecyclerView;
     private Toolbar toolbar;
     private Drawer navigationDrawer;
 
@@ -46,7 +43,8 @@ public class SectorsActivity extends AppCompatActivity {
     private long[] boulderNumbers;
     private String[] boulderNames;
 
-    private SectorsListAdapter sectorsListAdapter;
+    private SectorsAdapter sectorsAdapter;
+    private SectorsAdapter.ISectorsAdapterCallback sectorsAdapterCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +100,7 @@ public class SectorsActivity extends AppCompatActivity {
      */
     private void initXmlFields() {
         Log.d(TAG, "initXmlFields() start");
-        sectorLayoutListView = (ListView) findViewById(R.id.sectors_layout_list_view);
+        sectorsLayoutRecyclerView = (RecyclerView) findViewById(R.id.sectors_layout_recycler_view);
         buttonMap = (Button) findViewById(R.id.button_map);
         buttonMenu = (ImageButton) findViewById(R.id.button_menu);
         Log.d(TAG, "initXmlFields() done");
@@ -113,27 +111,17 @@ public class SectorsActivity extends AppCompatActivity {
      */
     private void initListeners() {
         Log.d(TAG, "initListeners() start");
-        sectorLayoutListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        sectorsAdapterCallback = new SectorsAdapter.ISectorsAdapterCallback() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Sector sector = (Sector) sectorsListAdapter.getItem(position);
+            public void openChosenSector(String sectorName, String sectorDescription, long sectorId) {
                 Intent intent = new Intent(getApplicationContext(), SectorActivity.class);
-                intent.putExtra(ICommonDtoConstants.SECTOR_ID, sector.getId());
-                // добавление названия сектора в зависимости от локали
-                if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
-                    intent.putExtra(ICommonDtoConstants.SECTOR_NAME, sector.getSectorName());
-                    intent.putExtra(ICommonDtoConstants.SECTOR_DESCRIPTION, sector.getSectorDesc());
-                } else if (Locale.getDefault().getLanguage().equals("ru")) {
-                    intent.putExtra(ICommonDtoConstants.SECTOR_NAME, sector.getSectorNameRu());
-                    intent.putExtra(ICommonDtoConstants.SECTOR_DESCRIPTION, sector.getSectorDescRu());
-                } else {
-                    intent.putExtra(ICommonDtoConstants.SECTOR_NAME, sector.getSectorName());
-                    intent.putExtra(ICommonDtoConstants.SECTOR_DESCRIPTION, sector.getSectorDesc());
-                }
+                intent.putExtra(ICommonDtoConstants.SECTOR_ID, sectorId);
+                intent.putExtra(ICommonDtoConstants.SECTOR_NAME, sectorName);
+                intent.putExtra(ICommonDtoConstants.SECTOR_DESCRIPTION, sectorDescription);
                 startActivity(intent);
                 overridePendingTransition(R.anim.right_in, R.anim.left_out);
             }
-        });
+        };
         buttonMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -292,11 +280,13 @@ public class SectorsActivity extends AppCompatActivity {
     private void initListAdapter() {
         Log.d(TAG, "initListAdapter() start");
         if (regionId == 1) {
-            sectorsListAdapter = new SectorsListAdapter(getApplicationContext(), SectorsCache.getInstance().getLietlahtiSectors());
-        } else {
-            sectorsListAdapter = new SectorsListAdapter(getApplicationContext(), SectorsCache.getInstance().getTriangularSectors());
+            sectorsAdapter = new SectorsAdapter(SectorsCache.getInstance().getLietlahtiSectors(), sectorsAdapterCallback);
+        } else if (regionId == 2) {
+            sectorsAdapter = new SectorsAdapter(SectorsCache.getInstance().getTriangularSectors(), sectorsAdapterCallback);
         }
-        sectorLayoutListView.setAdapter(sectorsListAdapter);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        sectorsLayoutRecyclerView.setLayoutManager(linearLayoutManager);
+        sectorsLayoutRecyclerView.setAdapter(sectorsAdapter);
         Log.d(TAG, "initListAdapter() done");
     }
 }

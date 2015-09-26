@@ -6,7 +6,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
-import com.j256.ormlite.misc.IOUtils;
+//import com.j256.ormlite.misc.IOUtils;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
@@ -102,8 +102,9 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements ICommonOrmHelp
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         } finally {
-            IOUtils.closeQuietly(outputStream);
-            IOUtils.closeQuietly(inputStream);
+            // TODO: из-за того, что убрал ormLite.jar
+//            IOUtils.closeQuietly(outputStream);
+//            IOUtils.closeQuietly(inputStream);
         }
     }
 

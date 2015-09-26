@@ -3,18 +3,17 @@ package com.triangularlake.constantine.triangularlake.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.j256.ormlite.android.loadercallback.OrmCursorLoaderCallback;
-import com.j256.ormlite.stmt.PreparedQuery;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -22,28 +21,30 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.triangularlake.constantine.triangularlake.R;
-import com.triangularlake.constantine.triangularlake.adapters.RegionsListAdapter;
+import com.triangularlake.constantine.triangularlake.adapters.RegionsAdapter;
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
-import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Region;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
 import com.triangularlake.constantine.triangularlake.pojo.SectorsCache;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegionsActivity extends Activity {
-    private static final String TAG = RegionsActivity.class.getSimpleName();
+    private final static String TAG = RegionsActivity.class.getSimpleName();
+    private final static int REGION_LIETLAHTI_ID = 1;
+    private final static int REGION_TRIANGULAR_LAKE_ID = 2;
 
-    private ListView regionsLayoutListView;
-    private RegionsListAdapter regionsListAdapter;
+    private RecyclerView regionsLayoutRecyclerView;
     private Drawer navigationDrawer;
 
     private Button buttonMap;
     private ImageButton buttonMenu;
 
-    private CommonDao commonDao;
-    private OrmCursorLoaderCallback<Region, Long> regionLoaderCallback;
+    private RegionsAdapter regionsAdapter;
+    private RegionsAdapter.IRegionsAdapterCallback regionsAdapterCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +58,8 @@ public class RegionsActivity extends Activity {
 
         initXmlFields();
         initListeners();
-        initListAdapter();
         initNavigationDrawer();
-        initOrmCursorLoader();
+        loadData();
     }
 
     /**
@@ -67,7 +67,7 @@ public class RegionsActivity extends Activity {
      */
     private void initXmlFields() {
         Log.d(TAG, "initXmlFields() start");
-        regionsLayoutListView = (ListView) findViewById(R.id.regions_layout_list_view);
+        regionsLayoutRecyclerView = (RecyclerView) findViewById(R.id.regions_layout_recycler_view);
         buttonMap = (Button) findViewById(R.id.button_map);
         buttonMenu = (ImageButton) findViewById(R.id.button_menu);
         Log.d(TAG, "initXmlFields() done");
@@ -78,28 +78,29 @@ public class RegionsActivity extends Activity {
      */
     private void initListeners() {
         Log.d(TAG, "initListeners() start");
-        regionsLayoutListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        regionsAdapterCallback = new RegionsAdapter.IRegionsAdapterCallback() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Region region = regionsListAdapter.getTypedItem(position);
+            public void openRegionOnId(long regionId) {
+                Log.d(TAG, "openChosenRegionOnId() start");
                 Intent intent = null;
-
-                switch (region.getRegionName()) {
-                    case IStringConstants.REGION_LIETLAHTI:
+                switch ((int)regionId) {
+                    case REGION_LIETLAHTI_ID:
                         intent = new Intent(getApplicationContext(), SectorsActivity.class);
                         intent.putExtra(IStringConstants.SECTOR_NAME, getString(R.string.lietlahti));
                         break;
-                    case IStringConstants.REGION_TRIANGULAR_LAKE:
+                    case REGION_TRIANGULAR_LAKE_ID:
                         intent = new Intent(getApplicationContext(), SectorsActivity.class);
                         intent.putExtra(IStringConstants.SECTOR_NAME, getString(R.string.triangular_lake));
                         break;
                 }
-
-                intent.putExtra(IStringConstants.REGION_ID, region.getId());
-                startActivity(intent);
-                overridePendingTransition(R.anim.right_in, R.anim.left_out);
+                if (intent != null) {
+                    intent.putExtra(IStringConstants.REGION_ID, regionId);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.right_in, R.anim.left_out);
+                }
+                Log.d(TAG, "openChosenRegionOnId() done");
             }
-        });
+        };
         buttonMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,15 +116,6 @@ public class RegionsActivity extends Activity {
             }
         });
         Log.d(TAG, "initListeners() done");
-    }
-
-    /**
-     * Инициализация адаптера списка регионов.
-     */
-    private void initListAdapter() {
-        Log.d(TAG, "initListAdapter() start");
-        regionsListAdapter = new RegionsListAdapter(getApplicationContext());
-        Log.d(TAG, "initListAdapter() done");
     }
 
     /**
@@ -178,6 +170,7 @@ public class RegionsActivity extends Activity {
 
     /**
      * Добавляем элементы меню в боковое меню.
+     *
      * @return массив элементов меню.
      */
     private IDrawerItem[] initDrawerItems() {
@@ -215,6 +208,7 @@ public class RegionsActivity extends Activity {
 
     /**
      * Заголовок в боковом меню.
+     *
      * @return объект класса заголовка меню.
      */
     private AccountHeader getAccountHeader() {
@@ -227,24 +221,49 @@ public class RegionsActivity extends Activity {
     }
 
     /**
-     * Инициалицация подключения к БД (Регион), добавление слушателя, берем список Регионов.
+     * Загрузка данных по регионам из БД в AsyncTask
      */
-    private void initOrmCursorLoader() {
-        Log.d(TAG, "initOrmCursorLoader() start");
-        regionsLayoutListView.setAdapter(regionsListAdapter);
-        try {
-            commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Region.class);
-            if (commonDao != null) {
-                PreparedQuery query = commonDao.queryBuilder().prepare();
-                regionLoaderCallback = new OrmCursorLoaderCallback<Region, Long>(getApplicationContext(),
-                        commonDao, query, regionsListAdapter);
-                getLoaderManager().initLoader(ICommonDtoConstants.REGION_LOADER_NUMBER, null, regionLoaderCallback);
-            } else {
-                Log.e(TAG, "Error when load Regions");
+    private void loadData() {
+        Log.d(TAG, "loadData() start");
+        new AsyncLoadDataFromDB().execute();
+        Log.d(TAG, "loadData() done");
+    }
+
+    /**
+     * Асинхронная загрузка Регионов из БД.
+     * Инициализация адаптера.
+     */
+    class AsyncLoadDataFromDB extends AsyncTask<Void, Void, List<Region>> {
+
+        @Override
+        protected List<Region> doInBackground(Void... voids) {
+            Log.d(TAG, "doInBackground() start");
+            List<Region> regions = new ArrayList<>();
+            try {
+                final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Region.class);
+                if (commonDao != null) {
+                    regions = commonDao.queryForAll();
+                } else {
+                    Log.e(TAG, "Error when load Regions");
+                }
+            } catch (SQLException e) {
+                Log.e(TAG, e.getMessage());
             }
-        } catch (SQLException e) {
-            Log.e(TAG, e.getMessage());
+            Log.d(TAG, "doInBackground() done");
+            return regions;
         }
-        Log.d(TAG, "initOrmCursorLoader() done");
+
+        @Override
+        protected void onPostExecute(List<Region> regions) {
+            super.onPostExecute(regions);
+            Log.d(TAG, "onPostExecute() start");
+            // инициализация адаптера + добаление слушателя события
+            regionsAdapter = new RegionsAdapter(regions, regionsAdapterCallback);
+            // инициализация RecyclerView
+            final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+            regionsLayoutRecyclerView.setLayoutManager(linearLayoutManager);
+            regionsLayoutRecyclerView.setAdapter(regionsAdapter);
+            Log.d(TAG, "onPostExecute() done");
+        }
     }
 }
