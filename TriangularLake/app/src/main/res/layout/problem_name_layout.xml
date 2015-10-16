@@ -25,7 +25,7 @@
 
     <TextView
         android:id="@+id/problem_name_layout_grade"
-        android:layout_width="45dp"
+        android:layout_width="50dp"
         android:layout_height="30dp"
         android:layout_alignTop="@+id/problem_name_layout_favorite"
         android:layout_toEndOf="@+id/problem_name_layout_favorite"

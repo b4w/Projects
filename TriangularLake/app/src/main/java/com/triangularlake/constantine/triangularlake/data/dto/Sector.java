@@ -43,7 +43,7 @@ public class Sector implements ICommonDtoConstants {
     @DatabaseField(dataType = DataType.BYTE_ARRAY, columnName = SECTOR_PHOTO)
     private byte[] sectorPhoto;             // фото (не указатель!)
 
-    @ForeignCollectionField(eager = true)
+    @ForeignCollectionField(eager = false)
     private Collection<Boulder> boulders;   // ссылка oneToMany на Boulder
 
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)

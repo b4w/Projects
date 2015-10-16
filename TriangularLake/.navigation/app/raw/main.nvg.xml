@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.triangularlake.constantine.triangularlake.activities.FiltersActivity"/>
+      <point      
+        x = "2440"      
+        y = "32"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.triangularlake.constantine.triangularlake.activities.SectorActivity"/>
+      <point      
+        x = "1576"      
+        y = "20"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.triangularlake.constantine.triangularlake.activities.SectorsActivity"/>
+      <point      
+        x = "96"      
+        y = "40"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.triangularlake.constantine.triangularlake.activities.RegionsActivity"/>
+      <point      
+        x = "650"      
+        y = "250"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.triangularlake.constantine.triangularlake.activities.SideActivity"/>
+      <point      
+        x = "700"      
+        y = "300"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.triangularlake.constantine.triangularlake.activities.InformationActivity"/>
+      <point      
+        x = "750"      
+        y = "350"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>

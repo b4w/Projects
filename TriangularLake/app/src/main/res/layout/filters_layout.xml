@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/filters_layout_toolbar_filters"
+        layout="@layout/toolbar_filters" />
 
     <FrameLayout
         android:id="@+id/filters_layout_container"
@@ -10,8 +15,4 @@
         android:layout_height="wrap_content"
         android:scrollbars="vertical" />
 
-    <include
-        android:id="@+id/filters_layout_toolbar_filters"
-        layout="@layout/toolbar_filters" />
-
-</RelativeLayout>
+</LinearLayout>

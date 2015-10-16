@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.triangularlake.constantine.triangularlake.R;
+import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Sector;
 import com.triangularlake.constantine.triangularlake.utils.StringUtils;
 
@@ -40,7 +41,7 @@ public class SectorsAdapter extends RecyclerView.Adapter<SectorsAdapter.ViewHold
                 if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
                     sbSectorDesc.append(sector.getSectorDesc());
                     sbSectorName.append(sector.getSectorName());
-                } else if (Locale.getDefault().getLanguage().equals("ru")) {
+                } else if (Locale.getDefault().getLanguage().equals(ICommonDtoConstants.RU)) {
                     sbSectorDesc.append(sector.getSectorDescRu());
                     sbSectorName.append(sector.getSectorNameRu());
                 } else {
@@ -59,7 +60,7 @@ public class SectorsAdapter extends RecyclerView.Adapter<SectorsAdapter.ViewHold
         final Sector sector = sectors.get(position);
         if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
             holder.sectorName.setText("<<" + sector.getSectorName() + ">>");
-        } else if (Locale.getDefault().getLanguage().equals("ru")) {
+        } else if (Locale.getDefault().getLanguage().equals(ICommonDtoConstants.RU)) {
             holder.sectorName.setText("<<" + sector.getSectorNameRu());
         } else {
             holder.sectorName.setText("<<" + sector.getSectorName());

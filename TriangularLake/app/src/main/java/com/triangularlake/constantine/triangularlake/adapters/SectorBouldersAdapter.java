@@ -94,7 +94,7 @@ public class SectorBouldersAdapter extends RecyclerView.Adapter<SectorBouldersAd
         intent.putExtra(ICommonDtoConstants.BOULDER_ID, boulderId);
         if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
             intent.putExtra(ICommonDtoConstants.BOULDER_NAME, name);
-        } else if (Locale.getDefault().getLanguage().equals("ru")) {
+        } else if (Locale.getDefault().getLanguage().equals(ICommonDtoConstants.RU)) {
             intent.putExtra(ICommonDtoConstants.BOULDER_NAME, nameRu);
         } else {
             intent.putExtra(ICommonDtoConstants.BOULDER_NAME, name);

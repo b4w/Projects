@@ -1,25 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sectors_layout_drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_gravity="end"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="end">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/sectors_layout_recycler_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/sectors_layout_toolbar"
-        layout="@layout/toolbar" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/sectors_layout_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <include
-        android:id="@+id/sectors_layout_button_menu"
-        layout="@layout/button_menu"/>
+        <include
+            android:id="@+id/sectors_layout_toolbar"
+            layout="@layout/toolbar" />
 
-    <include
-        android:id="@+id/sectors_layout_button_map"
-        layout="@layout/button_map"/>
+        <include
+            android:id="@+id/sectors_layout_button_menu"
+            layout="@layout/button_menu" />
 
+        <include
+            android:id="@+id/sectors_layout_button_map"
+            layout="@layout/button_map" />
 
-</RelativeLayout>
+    </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/sectors_layout_navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="@color/background"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/navigator_header_layout"
+        app:menu="@menu/navigator_header_menu" />
+
+</android.support.v4.widget.DrawerLayout>

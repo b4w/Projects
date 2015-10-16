@@ -12,6 +12,7 @@ public interface ICommonDtoConstants {
     String PROBLEM_NUMBERS = "problem_numbers";
     String PROBLEM_ID = "problem_id";
     String SECTOR_DESCRIPTION = "sector_description";
+    String RU = "ru";
 
     // REGION table
     String REGION_TABLE_NAME = "REGIONS";
@@ -58,6 +59,7 @@ public interface ICommonDtoConstants {
     String PROBLEM_LETTER = "problem_letter";
     String PROBLEM_NAME = "problem_name";
     String PROBLEM_NAME_RU = "problem_name_ru";
+    String FAVOURITE = "favourite";
 
     // Photo table
     String PHOTO_TABLE_NAME = "PHOTOS";

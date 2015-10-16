@@ -16,6 +16,7 @@ import com.triangularlake.constantine.triangularlake.adapters.FavouriteProblemsA
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.Problem;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
+import com.triangularlake.constantine.triangularlake.pojo.FavouriteProblemsCache;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class FavouriteFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadData();
     }
 
     @Nullable
@@ -48,7 +50,6 @@ public class FavouriteFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initXmlFields();
-        loadData();
         initListeners();
     }
 
@@ -60,41 +61,44 @@ public class FavouriteFragment extends Fragment {
 
     private void initListeners() {
         Log.d(TAG, "initListeners() start");
-
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        fragmentFavoritesProblems.setLayoutManager(linearLayoutManager);
+        fragmentFavoritesProblems.setAdapter(favouriteProblemsAdapter);
         Log.d(TAG, "initListeners() done");
     }
 
     private void loadData() {
         Log.d(TAG, "loadData() start");
-        new AsyncLoadProblems().execute();
+        favouriteProblemsAdapter = new FavouriteProblemsAdapter(
+                new ArrayList<>(FavouriteProblemsCache.getInstance().getFavouriteProblems().values()));
         Log.d(TAG, "loadData() done");
     }
 
-    class AsyncLoadProblems extends AsyncTask <Void, Void, List<Problem>> {
-
-        @Override
-        protected List<Problem> doInBackground(Void... voids) {
-            Log.d(TAG, "async load problems doInBackground() start");
-            List<Problem> problems = new ArrayList<>();
-            try {
-                // TODO: выбирать только избранные проблемы
-                final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
-                problems = commonDao.queryForAll();
-            } catch (SQLException e) {
-                Log.e(TAG, "Error! " + e.getMessage());
-            }
-            Log.d(TAG, "async load problems doInBackground() done");
-            return problems;
-        }
-
-        @Override
-        protected void onPostExecute(List<Problem> problems) {
-            super.onPostExecute(problems);
-            // добавление данных в адаптер и RecyclerView
-            final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-            favouriteProblemsAdapter = new FavouriteProblemsAdapter(problems);
-            fragmentFavoritesProblems.setLayoutManager(layoutManager);
-            fragmentFavoritesProblems.setAdapter(favouriteProblemsAdapter);
-        }
-    }
+//    class AsyncLoadProblems extends AsyncTask <Void, Void, List<Problem>> {
+//
+//        @Override
+//        protected List<Problem> doInBackground(Void... voids) {
+//            Log.d(TAG, "async load problems doInBackground() start");
+//            List<Problem> problems = new ArrayList<>();
+//            try {
+//                // TODO: выбирать только избранные проблемы
+//                final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
+//                problems = commonDao.queryForAll();
+//            } catch (SQLException e) {
+//                Log.e(TAG, "Error! " + e.getMessage());
+//            }
+//            Log.d(TAG, "async load problems doInBackground() done");
+//            return problems;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(List<Problem> problems) {
+//            super.onPostExecute(problems);
+//            // добавление данных в адаптер и RecyclerView
+//            final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+//            favouriteProblemsAdapter = new FavouriteProblemsAdapter(problems);
+//            fragmentFavoritesProblems.setLayoutManager(layoutManager);
+//            fragmentFavoritesProblems.setAdapter(favouriteProblemsAdapter);
+//        }
+//    }
 }

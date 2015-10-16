@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.triangularlake.constantine.triangularlake.R;
+import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.fragments.FavouriteFragment;
 import com.triangularlake.constantine.triangularlake.fragments.FiltersFragment;
 import com.triangularlake.constantine.triangularlake.fragments.SearchFragment;
@@ -18,6 +19,7 @@ import java.util.Locale;
 
 public class FiltersActivity extends AppCompatActivity {
     private static final String TAG = FiltersActivity.class.getSimpleName();
+    private static final String RU = "ru";
 
     private String nameFilterFragment;
     private Toolbar toolbarFilters;
@@ -85,7 +87,7 @@ public class FiltersActivity extends AppCompatActivity {
     private void setTitleToolbar(int idString) {
         if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
             getSupportActionBar().setTitle(getResources().getString(idString));
-        } else if (Locale.getDefault().getLanguage().equals("ru")) {
+        } else if (Locale.getDefault().getLanguage().equals(RU)) {
             getSupportActionBar().setTitle(getResources().getString(idString));
         } else {
             getSupportActionBar().setTitle(getResources().getString(idString));

@@ -14,12 +14,15 @@
     <string name="danger">Опасность</string>
     <string name="insurance">Страховка</string>
     <string name="addition">Дополнительно</string>
+    <string name="area_upper">РАЙОН</string>
 
-    <!--боковое меню-->
+    <!--навигационное меню-->
     <string name="favorites_upper">ИЗБРАННОЕ</string>
     <string name="filter_routes_upper">ФИЛЬТР ТРАСС</string>
     <string name="search_upper">ПОИСК</string>
     <string name="information">Информация</string>
     <string name="guidebook_lower">гайдбук</string>
+    <string name="navigation_menu_open">Навигационное меню открыто</string>
+    <string name="navigation_menu_close">Навигационное меню закрыто</string>
 
 </resources>

@@ -1,25 +1,22 @@
 package com.triangularlake.constantine.triangularlake.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.SectorsAdapter;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
@@ -32,7 +29,6 @@ public class SectorsActivity extends AppCompatActivity {
 
     private RecyclerView sectorsLayoutRecyclerView;
     private Toolbar toolbar;
-    private Drawer navigationDrawer;
 
     private long regionId;
     private String sectorName;
@@ -40,8 +36,9 @@ public class SectorsActivity extends AppCompatActivity {
     private Button buttonMap;
     private ImageButton buttonMenu;
 
-    private long[] boulderNumbers;
-    private String[] boulderNames;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private NavigationView navigationView;
 
     private SectorsAdapter sectorsAdapter;
     private SectorsAdapter.ISectorsAdapterCallback sectorsAdapterCallback;
@@ -52,17 +49,20 @@ public class SectorsActivity extends AppCompatActivity {
         setContentView(R.layout.sectors_layout);
 
         initInputValues();
+        initToolbar();
         initXmlFields();
         initListeners();
-        initNavigationDrawer();
-        initToolbar();
         initListAdapter();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.right_out, R.anim.left_in);
+        if (drawerLayout != null && navigationView != null && drawerLayout.isDrawerOpen(navigationView)) {
+            drawerLayout.closeDrawer(navigationView);
+        } else {
+            overridePendingTransition(R.anim.right_out, R.anim.left_in);
+        }
     }
 
     /**
@@ -103,6 +103,13 @@ public class SectorsActivity extends AppCompatActivity {
         sectorsLayoutRecyclerView = (RecyclerView) findViewById(R.id.sectors_layout_recycler_view);
         buttonMap = (Button) findViewById(R.id.button_map);
         buttonMenu = (ImageButton) findViewById(R.id.button_menu);
+        // инициализация бокового меню
+        drawerLayout = (DrawerLayout) findViewById(R.id.sectors_layout_drawer);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, null, R.string.navigation_menu_open, R.string.navigation_menu_close);
+        drawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
+        navigationView = (NavigationView) findViewById(R.id.sectors_layout_navigation_view);
+        navigationView.setItemTextColor(ColorStateList.valueOf(getResources().getColor(R.color.text_main)));
         Log.d(TAG, "initXmlFields() done");
     }
 
@@ -125,8 +132,8 @@ public class SectorsActivity extends AppCompatActivity {
         buttonMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (navigationDrawer != null) {
-                    navigationDrawer.openDrawer();
+                if (drawerLayout != null && navigationView != null) {
+                    drawerLayout.openDrawer(navigationView);
                 }
             }
         });
@@ -134,6 +141,41 @@ public class SectorsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(), "Show map", Toast.LENGTH_SHORT).show();
+            }
+        });
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                Bundle nameFragment = new Bundle();
+                Intent intent = null;
+                switch (id) {
+                    case (R.id.favourite):
+                        nameFragment.putString(IStringConstants.NAME_FILTER_FRAGMENT, IStringConstants.FAVORITES_FRAGMENT);
+                        intent = new Intent(getApplicationContext(), FiltersActivity.class);
+                        intent.putExtras(nameFragment);
+                        break;
+                    case (R.id.filter_routes):
+                        nameFragment.putString(IStringConstants.NAME_FILTER_FRAGMENT, IStringConstants.FILTERS_FRAGMENT);
+                        intent = new Intent(getApplicationContext(), FiltersActivity.class);
+                        intent.putExtras(nameFragment);
+                        break;
+                    case (R.id.search):
+                        nameFragment.putString(IStringConstants.NAME_FILTER_FRAGMENT, IStringConstants.SEARCH_FRAGMENT);
+                        intent = new Intent(getApplicationContext(), FiltersActivity.class);
+                        intent.putExtras(nameFragment);
+                        break;
+                    case (R.id.information):
+                        intent = new Intent(getApplicationContext(), InformationActivity.class);
+                        break;
+                }
+                if (drawerLayout.isDrawerOpen(navigationView)) {
+                    drawerLayout.closeDrawer(navigationView);
+                }
+                startActivity(intent);
+                // TODO: поменять анимацию
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                return true;
             }
         });
         /*
@@ -173,108 +215,6 @@ public class SectorsActivity extends AppCompatActivity {
 //            }
 //        });
         Log.d(TAG, "initListeners() done");
-    }
-
-    /**
-     * Добавляем боковое меню (navigationDrawer).
-     */
-    private void initNavigationDrawer() {
-        Log.d(TAG, "initNavigationDrawer() start");
-        navigationDrawer = new DrawerBuilder()
-                .withActivity(this)
-                .withDrawerGravity(Gravity.RIGHT)
-                .withActionBarDrawerToggleAnimated(true)
-                .withAccountHeader(getAccountHeader())
-                .withSliderBackgroundColorRes(R.color.background) // цвет фона
-                .addDrawerItems(initDrawerItems())
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int i, IDrawerItem iDrawerItem) {
-                        Bundle nameFragment = new Bundle();
-                        Intent intent = null;
-                        switch (i) {
-                            case 1:
-                                nameFragment.putString(IStringConstants.NAME_FILTER_FRAGMENT, IStringConstants.FAVORITES_FRAGMENT);
-                                intent = new Intent(getApplicationContext(), FiltersActivity.class);
-                                intent.putExtras(nameFragment);
-                                break;
-                            case 2:
-                                nameFragment.putString(IStringConstants.NAME_FILTER_FRAGMENT, IStringConstants.FILTERS_FRAGMENT);
-                                intent = new Intent(getApplicationContext(), FiltersActivity.class);
-                                intent.putExtras(nameFragment);
-                                break;
-                            case 3:
-                                nameFragment.putString(IStringConstants.NAME_FILTER_FRAGMENT, IStringConstants.SEARCH_FRAGMENT);
-                                intent = new Intent(getApplicationContext(), FiltersActivity.class);
-                                intent.putExtras(nameFragment);
-                                break;
-                            case 4:
-                                intent = new Intent(getApplicationContext(), InformationActivity.class);
-                                break;
-                        }
-                        if (navigationDrawer.isDrawerOpen()) {
-                            navigationDrawer.closeDrawer();
-                        }
-                        startActivity(intent);
-                        // TODO: поменять анимацию
-                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        return true;
-                    }
-                })
-                .build();
-        Log.d(TAG, "initNavigationDrawer() done");
-    }
-
-    /**
-     * Добавляем элементы меню в боковое меню.
-     *
-     * @return массив элементов меню.
-     */
-    private IDrawerItem[] initDrawerItems() {
-        Log.d(TAG, "initDrawerItems()");
-        PrimaryDrawerItem favoritesItem = new PrimaryDrawerItem()
-                .withName(getResources().getString(R.string.favorites_upper))
-                .withSelectedColorRes(R.color.background) // цвет выделенного пункта из ресурсов
-                .withSelectedTextColorRes(R.color.text_main) // цвет текста выделенного пункта из ресурсов
-                .withTextColor(Color.WHITE)
-                .withIdentifier(1);
-
-        PrimaryDrawerItem filterRoutesItem = new PrimaryDrawerItem()
-                .withName(getResources().getString(R.string.filter_routes_upper))
-                .withSelectedColorRes(R.color.background) // цвет выделенного пункта из ресурсов
-                .withSelectedTextColorRes(R.color.text_main) // цвет текста выделенного пункта из ресурсов
-                .withTextColor(Color.WHITE)
-                .withIdentifier(1);
-
-        PrimaryDrawerItem searchItem = new PrimaryDrawerItem()
-                .withName(getResources().getString(R.string.search_upper))
-                .withSelectedColorRes(R.color.background) // цвет выделенного пункта из ресурсов
-                .withSelectedTextColorRes(R.color.text_main) // цвет текста выделенного пункта из ресурсов
-                .withTextColor(Color.WHITE)
-                .withIdentifier(1);
-
-        PrimaryDrawerItem informationItem = new PrimaryDrawerItem()
-                .withName(getResources().getString(R.string.information))
-                .withSelectedColorRes(R.color.background) // цвет выделенного пункта из ресурсов
-                .withSelectedTextColorRes(R.color.text_main) // цвет текста выделенного пункта из ресурсов
-                .withTextColor(Color.WHITE)
-                .withIdentifier(1);
-
-        return new IDrawerItem[]{favoritesItem, filterRoutesItem, searchItem, informationItem};
-    }
-
-    /**
-     * Заголовок в боковом меню.
-     *
-     * @return объект класса заголовка меню.
-     */
-    private AccountHeader getAccountHeader() {
-        Log.d(TAG, "getAccountHeader() start");
-        AccountHeader accountHeader = new AccountHeaderBuilder()
-                .withActivity(this)
-                .build();
-        Log.d(TAG, "getAccountHeader() done");
-        return accountHeader;
     }
 
     private void initListAdapter() {

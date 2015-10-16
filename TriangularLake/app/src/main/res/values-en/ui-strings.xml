@@ -14,12 +14,15 @@
     <string name="danger">Danger</string>
     <string name="insurance">Insurance</string>
     <string name="addition">Addition</string>
+    <string name="area_upper">AREA</string>
 
-    <!--боковое меню-->
+    <!--навигационное меню-->
     <string name="favorites_upper">FAVORITES</string>
     <string name="filter_routes_upper">FILTER OF ROUTES</string>
     <string name="search_upper">SEARCH</string>
     <string name="information">Information</string>
     <string name="guidebook_lower">guidebook</string>
+    <string name="navigation_menu_open">Navigation menu is open</string>
+    <string name="navigation_menu_close">Navigation menu is close</string>
 
 </resources>

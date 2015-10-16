@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.triangularlake.constantine.triangularlake.R;
+import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Region;
 import com.triangularlake.constantine.triangularlake.utils.StringUtils;
 
@@ -18,6 +19,7 @@ import java.util.Locale;
 
 public class RegionsAdapter extends RecyclerView.Adapter<RegionsAdapter.ViewHolder> {
 
+    private final static String RU = "ru";
     private List<Region> regions;
     private IRegionsAdapterCallback callback;
 
@@ -45,7 +47,7 @@ public class RegionsAdapter extends RecyclerView.Adapter<RegionsAdapter.ViewHold
         final Region region = regions.get(position);
         if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
             holder.regionName.setText("<<" + region.getRegionName() + ">>");
-        } else if (Locale.getDefault().getLanguage().equals("ru")) {
+        } else if (Locale.getDefault().getLanguage().equals(RU)) {
             holder.regionName.setText("<<" + region.getRegionNameRu() + ">>");
         } else {
             holder.regionName.setText("<<" + region.getRegionName() + ">>");

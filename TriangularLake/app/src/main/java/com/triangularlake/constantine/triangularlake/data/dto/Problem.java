@@ -46,13 +46,16 @@ public class Problem implements ICommonDtoConstants {
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Side side;                              // ссылка manyToOne на Side
 
+    @DatabaseField(columnName = FAVOURITE)
+    private int favourite;                          // проблема добавлена в избранное
+
     public Problem() {
         // need for ormLite
     }
 
     public Problem(Long id, boolean friendHelp, int padCount, String problemDesc, String problemDescRu,
                    String problemGrade, String problemLetter, String problemName, String problemNameRu,
-                   int warningLevel, Photo photo, Boulder boulder, Side side) {
+                   int warningLevel, Photo photo, Boulder boulder, Side side, int favourite) {
         this.id = id;
         this.friendHelp = friendHelp;
         this.padCount = padCount;
@@ -66,6 +69,7 @@ public class Problem implements ICommonDtoConstants {
         this.photo = photo;
         this.boulder = boulder;
         this.side = side;
+        this.favourite = favourite;
     }
 
     public Long getId() {
@@ -170,5 +174,13 @@ public class Problem implements ICommonDtoConstants {
 
     public void setSide(Side side) {
         this.side = side;
+    }
+
+    public int getFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(int favourite) {
+        this.favourite = favourite;
     }
 }

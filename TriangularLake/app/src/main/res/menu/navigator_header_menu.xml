@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/favourite"
+            android:title="@string/favorites_upper" />
+        <!--android:icon="@android:drawable/ic_menu_camera"-->
+        <item
+            android:id="@+id/filter_routes"
+            android:title="@string/filter_routes_upper" />
+        <item
+            android:id="@+id/search"
+            android:title="@string/search_upper" />
+        <item
+            android:id="@+id/information"
+            android:title="@string/information" />
+    </group>
 </menu>

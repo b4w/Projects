@@ -29,7 +29,7 @@ public class Region implements ICommonDtoConstants {
     @DatabaseField(dataType = DataType.BYTE_ARRAY, columnName = REGION_PHOTO)
     private byte[] regionPhoto;             // фотография (не указатель, а само фото)
 
-    @ForeignCollectionField(eager = true)
+    @ForeignCollectionField(eager = false)
     private Collection<Sector> sectors;     // ссылка oneToMany на Sector
 
     public int getCountSectors() {

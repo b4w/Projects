@@ -48,7 +48,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/sectors_list_line_image"
         android:layout_marginRight="15dp"
-        android:src="@drawable/region_circle" />
+        android:src="@drawable/region_circle_transparent" />
 
     <TextView
         android:id="@+id/sectors_list_problem_count"
