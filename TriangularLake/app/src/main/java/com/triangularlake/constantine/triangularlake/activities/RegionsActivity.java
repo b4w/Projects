@@ -56,10 +56,10 @@ public class RegionsActivity extends Activity {
             new SectorsCache.AsyncLoadSectors(getApplicationContext()).execute();
         }
 
-        // кеширование избранных проблем в отдельном потоке
-        if (!FavouriteProblemsCache.isCached) {
-            new FavouriteProblemsCache.AsyncLoaderFavouriteRoutes(getApplicationContext()).execute();
-        }
+//        // кеширование избранных проблем в отдельном потоке
+//        if (!FavouriteProblemsCache.isCached) {
+//            new FavouriteProblemsCache.AsyncLoaderFavouriteRoutes(getApplicationContext()).execute();
+//        }
 
         initXmlFields();
         initListeners();

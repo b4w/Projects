@@ -4,6 +4,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.j256.ormlite.dao.CloseableIterator;
+import com.j256.ormlite.dao.CloseableWrappedIterable;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.Boulder;
 import com.triangularlake.constantine.triangularlake.data.dto.Problem;
@@ -13,10 +17,12 @@ import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class BoulderProblems {
     private static final String TAG = BoulderProblems.class.getSimpleName();
+    private static final String ID = "_id";
 
     private long id;
     private byte[] photo;
@@ -91,8 +97,12 @@ public class BoulderProblems {
             boulderProblemsList = new ArrayList<>();
             try {
                 final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(context).getDaoByClass(Sector.class);
-                final Sector sector = (Sector) commonDao.queryForEq("_id", sectorId).get(0);
+                final Sector sector = (Sector) commonDao.queryForEq(ID, sectorId).get(0);
                 if (sector != null) {
+//                    final Iterator iterator = sector.getBoulders().iterator();
+//                    while (iterator.hasNext()) {
+//                        Boulder boulder = (Boulder) iterator.next();
+//                    }
                     sectorPhoto = sector.getSectorPhoto();
                     for (Boulder boulder : sector.getBoulders()) {
                         boulderProblemsList.add(new BoulderProblems(

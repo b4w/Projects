@@ -16,14 +16,13 @@ import com.triangularlake.constantine.triangularlake.adapters.FavouriteProblemsA
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.Problem;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
-import com.triangularlake.constantine.triangularlake.pojo.FavouriteProblemsCache;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FavouriteFragment extends Fragment {
     private static final String TAG = FavouriteFragment.class.getSimpleName();
+    private static final String FAVOURITE = "favourite";
 
     private RecyclerView fragmentFavoritesProblems;
     private FavouriteProblemsAdapter favouriteProblemsAdapter;
@@ -69,36 +68,35 @@ public class FavouriteFragment extends Fragment {
 
     private void loadData() {
         Log.d(TAG, "loadData() start");
-        favouriteProblemsAdapter = new FavouriteProblemsAdapter(
-                new ArrayList<>(FavouriteProblemsCache.getInstance().getFavouriteProblems().values()));
+        new AsyncLoadProblems().execute();
         Log.d(TAG, "loadData() done");
     }
 
-//    class AsyncLoadProblems extends AsyncTask <Void, Void, List<Problem>> {
-//
-//        @Override
-//        protected List<Problem> doInBackground(Void... voids) {
-//            Log.d(TAG, "async load problems doInBackground() start");
-//            List<Problem> problems = new ArrayList<>();
-//            try {
-//                // TODO: выбирать только избранные проблемы
-//                final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
-//                problems = commonDao.queryForAll();
-//            } catch (SQLException e) {
-//                Log.e(TAG, "Error! " + e.getMessage());
-//            }
-//            Log.d(TAG, "async load problems doInBackground() done");
-//            return problems;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(List<Problem> problems) {
-//            super.onPostExecute(problems);
-//            // добавление данных в адаптер и RecyclerView
-//            final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-//            favouriteProblemsAdapter = new FavouriteProblemsAdapter(problems);
-//            fragmentFavoritesProblems.setLayoutManager(layoutManager);
-//            fragmentFavoritesProblems.setAdapter(favouriteProblemsAdapter);
-//        }
-//    }
+    class AsyncLoadProblems extends AsyncTask <Void, Void, List<Problem>> {
+        // TODO: С кешем было вроде быстрее, чем с достованием из бд.
+        @Override
+        protected List<Problem> doInBackground(Void... voids) {
+            Log.d(TAG, "async load problems doInBackground() start");
+            try {
+                final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
+                if (commonDao != null) {
+                    return commonDao.queryForEq(FAVOURITE, 1);
+                }
+            } catch (SQLException e) {
+                Log.e(TAG, "Error! " + e.getMessage());
+            }
+            Log.d(TAG, "async load problems doInBackground() done");
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Problem> problems) {
+            super.onPostExecute(problems);
+            // добавление данных в адаптер и RecyclerView
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            favouriteProblemsAdapter = new FavouriteProblemsAdapter(problems);
+            fragmentFavoritesProblems.setLayoutManager(layoutManager);
+            fragmentFavoritesProblems.setAdapter(favouriteProblemsAdapter);
+        }
+    }
 }

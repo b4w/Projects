@@ -13,11 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.FavouriteProblemsAdapter;
 import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
-import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
 import com.triangularlake.constantine.triangularlake.data.dto.Problem;
+import com.triangularlake.constantine.triangularlake.data.dto.Sector;
 import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
 import com.triangularlake.constantine.triangularlake.pojo.FavouriteProblemsCache;
 
@@ -26,8 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class SearchFragment extends Fragment implements ICommonDtoConstants {
+public class SearchFragment extends Fragment {
     private static final String TAG = SearchFragment.class.getSimpleName();
+
+    private static final String PROBLEM_NAME = "problem_name";
+    private static final String PROBLEM_NAME_RU = "problem_name_ru";
+    private static final String RU = "ru";
 
     private EditText inputSearch;
     private RecyclerView fragmentSearchProblems;
@@ -60,8 +66,16 @@ public class SearchFragment extends Fragment implements ICommonDtoConstants {
 
     private void loadData() {
         Log.d(TAG, "loadData() start");
-        favouriteProblemsAdapter = new FavouriteProblemsAdapter(
-                new ArrayList<>(FavouriteProblemsCache.getInstance().getFavouriteProblems().values()));
+        try {
+            final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
+            @SuppressWarnings("unchecked")
+            final List<Problem> problems = commonDao.queryForAll();
+            if (problems != null) {
+                favouriteProblemsAdapter = new FavouriteProblemsAdapter(problems);
+            }
+        } catch (SQLException e) {
+
+        }
         Log.d(TAG, "loadData() done");
     }
 
@@ -85,20 +99,25 @@ public class SearchFragment extends Fragment implements ICommonDtoConstants {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                final CommonDao commonDao;
                 try {
-                    commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
+                    final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
                     if (commonDao != null) {
                         String searchField = charSequence.toString();
-                        List<Problem> problems = null;
+                        // TODO: Ошибка по SIDES! =(((
+                        @SuppressWarnings("unchecked")
+                        final QueryBuilder<Problem, Long> qb = commonDao.queryBuilder();
                         if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
-                            searchField = charSequence.toString();
-                            problems = commonDao.queryForEq("problem_name", searchField);
-                        } else if (Locale.getDefault().getLanguage().equals("ru")) {
-                            problems = commonDao.queryForEq("problem_name_ru", searchField);
+                            qb.where().like(PROBLEM_NAME, '%' + searchField + '%');
+                        } else if (Locale.getDefault().getLanguage().equals(RU)) {
+                            qb.where().like(PROBLEM_NAME_RU, '%' + searchField + '%');
                         } else {
-                            problems = commonDao.queryForEq("problem_name", searchField);
+                            qb.where().like(PROBLEM_NAME, '%' + searchField + '%');
                         }
+                        final PreparedQuery<Problem> pq = qb.prepare();
+                        @SuppressWarnings("unchecked")
+                        List<Problem> problems = commonDao.query(pq);
+                        favouriteProblemsAdapter.setProblems(problems);
+                        favouriteProblemsAdapter.notifyDataSetChanged();
                     }
                 } catch (SQLException e) {
                     Log.e("FavouriteProblemsCache!", "FavouriteProblemsCache doInBackground() Error! " + e.getMessage());

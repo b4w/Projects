@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/sectors_list_sector_photo"
         android:layout_width="match_parent"
-        android:layout_height="260dp"/>
+        android:layout_height="@dimen/sector_image_height"/>
 
     <TextView
         android:id="@+id/sectors_list_sector_label"
@@ -19,26 +19,30 @@
         android:layout_alignBottom="@+id/sectors_list_sector_photo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_marginLeft="@dimen/sector_padding"
         android:layout_marginBottom="80dp" />
 
     <TextView
         android:id="@+id/sectors_list_sector_name"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="18dp"
         android:layout_alignTop="@+id/sectors_list_sector_label"
         android:layout_toEndOf="@+id/sectors_list_sector_label"
         android:layout_toRightOf="@+id/sectors_list_sector_label"
         android:textColor="@color/text_main"
-        android:textSize="15sp" />
+        android:textSize="@dimen/sector_label_text_size"
+        android:layout_marginLeft="@dimen/sector_margin"/>
 
     <ImageView
         android:id="@+id/sectors_list_line_image"
-        android:layout_width="50sp"
-        android:layout_height="3dp"
+        android:layout_width="40sp"
+        android:layout_height="1dp"
         android:background="@color/text_main"
         android:layout_below="@+id/sectors_list_sector_name"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="@dimen/sector_padding"
+        android:layout_marginTop="@dimen/sector_padding"/>
 
     <ImageView
         android:id="@+id/sectors_list_route_image"
@@ -48,7 +52,9 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/sectors_list_line_image"
         android:layout_marginRight="15dp"
-        android:src="@drawable/region_circle_transparent" />
+        android:layout_marginLeft="@dimen/sector_margin"
+        android:layout_marginTop="@dimen/sector_margin"
+        android:src="@drawable/route_line_transparent" />
 
     <TextView
         android:id="@+id/sectors_list_problem_count"

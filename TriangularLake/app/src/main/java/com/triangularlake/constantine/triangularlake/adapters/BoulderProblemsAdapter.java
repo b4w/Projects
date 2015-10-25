@@ -106,13 +106,13 @@ public class BoulderProblemsAdapter extends RecyclerView.Adapter<BoulderProblems
         }
     }
 
-    private void addRemoveFavouriteProblem(final Context context, Long problemId, int isAdded) {
+    private void addRemoveFavouriteProblem(final Context context, Integer problemId, int isAdded) {
         final CommonDao commonDao;
         try {
             commonDao = OrmConnect.INSTANCE.getDBConnect(context).getDaoByClass(Problem.class);
             if (commonDao != null) {
                 @SuppressWarnings("unchecked")
-                final UpdateBuilder<Problem, Long> updateBuilder = commonDao.updateBuilder();
+                final UpdateBuilder<Problem, Integer> updateBuilder = commonDao.updateBuilder();
                 updateBuilder.where().eq(ICommonDtoConstants.ID, problemId);
                 updateBuilder.updateColumnValue(ICommonDtoConstants.FAVOURITE, isAdded);
                 updateBuilder.update();

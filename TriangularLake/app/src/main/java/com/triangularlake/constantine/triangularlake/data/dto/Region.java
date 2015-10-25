@@ -1,5 +1,6 @@
 package com.triangularlake.constantine.triangularlake.data.dto;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -12,7 +13,7 @@ import java.util.List;
 public class Region implements ICommonDtoConstants {
 
     @DatabaseField(id = true, canBeNull = false, generatedId = false, columnName = ID)
-    private Long id;                        // id региона
+    private int id;                        // id региона
 
     @DatabaseField(columnName = REGION_LAT)
     private String regionLat;               // широта координаты центра региона
@@ -30,7 +31,7 @@ public class Region implements ICommonDtoConstants {
     private byte[] regionPhoto;             // фотография (не указатель, а само фото)
 
     @ForeignCollectionField(eager = false)
-    private Collection<Sector> sectors;     // ссылка oneToMany на Sector
+    private ForeignCollection<Sector> sectors;     // ссылка oneToMany на Sector
 
     public int getCountSectors() {
         return sectors != null ? sectors.size() : 0;
@@ -40,8 +41,8 @@ public class Region implements ICommonDtoConstants {
         // need for ormLite
     }
 
-    public Region(Long id, String regionLat, String regionLon, String regionName,
-                  byte[] regionPhoto, List<Sector> sectors) {
+    public Region(int id, String regionLat, String regionLon, String regionName,
+                  byte[] regionPhoto, ForeignCollection<Sector> sectors) {
         this.id = id;
         this.regionLat = regionLat;
         this.regionLon = regionLon;
@@ -52,11 +53,12 @@ public class Region implements ICommonDtoConstants {
 
 //    GET & SET
 
-    public Long getId() {
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -92,11 +94,11 @@ public class Region implements ICommonDtoConstants {
         this.regionPhoto = regionPhoto;
     }
 
-    public Collection<Sector> getSectors() {
+    public ForeignCollection<Sector> getSectors() {
         return sectors;
     }
 
-    public void setSectors(Collection<Sector> sectors) {
+    public void setSectors(ForeignCollection<Sector> sectors) {
         this.sectors = sectors;
     }
 

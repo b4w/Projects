@@ -19,6 +19,9 @@ import java.util.Locale;
 
 public class SectorsAdapter extends RecyclerView.Adapter<SectorsAdapter.ViewHolder> {
 
+    private static final String LEFT_QUOTES = "<<";
+    private static final String RIGHT_QUOTES = ">>";
+
     private List<Sector> sectors;
     private ISectorsAdapterCallback sectorsAdapterCallback;
 
@@ -58,12 +61,22 @@ public class SectorsAdapter extends RecyclerView.Adapter<SectorsAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Sector sector = sectors.get(position);
+        final StringBuffer sb;
         if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
-            holder.sectorName.setText("<<" + sector.getSectorName() + ">>");
+            sb = new StringBuffer(LEFT_QUOTES)
+                    .append(sector.getSectorName())
+                    .append(RIGHT_QUOTES);
+            holder.sectorName.setText(sb.toString());
         } else if (Locale.getDefault().getLanguage().equals(ICommonDtoConstants.RU)) {
-            holder.sectorName.setText("<<" + sector.getSectorNameRu());
+            sb = new StringBuffer(LEFT_QUOTES)
+                    .append(sector.getSectorNameRu())
+                    .append(RIGHT_QUOTES);
+            holder.sectorName.setText(sb.toString());
         } else {
-            holder.sectorName.setText("<<" + sector.getSectorName());
+            sb = new StringBuffer(LEFT_QUOTES)
+                    .append(sector.getSectorName())
+                    .append(RIGHT_QUOTES);
+            holder.sectorName.setText(sb.toString());
         }
         final Bitmap bitmap = BitmapFactory.decodeByteArray(sector.getSectorPhoto(), 0, sector.getSectorPhoto().length);
         holder.sectorPhoto.setImageBitmap(bitmap);

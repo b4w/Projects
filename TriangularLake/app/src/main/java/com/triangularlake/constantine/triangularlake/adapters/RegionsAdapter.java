@@ -20,6 +20,9 @@ import java.util.Locale;
 public class RegionsAdapter extends RecyclerView.Adapter<RegionsAdapter.ViewHolder> {
 
     private final static String RU = "ru";
+    private static final String LEFT_QUOTES = "<<";
+    private static final String RIGHT_QUOTES = ">>";
+
     private List<Region> regions;
     private IRegionsAdapterCallback callback;
 
@@ -45,12 +48,22 @@ public class RegionsAdapter extends RecyclerView.Adapter<RegionsAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Region region = regions.get(position);
+        final StringBuffer sb;
         if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
-            holder.regionName.setText("<<" + region.getRegionName() + ">>");
+            sb = new StringBuffer(LEFT_QUOTES)
+                    .append(region.getRegionName())
+                    .append(RIGHT_QUOTES);
+            holder.regionName.setText(sb.toString());
         } else if (Locale.getDefault().getLanguage().equals(RU)) {
-            holder.regionName.setText("<<" + region.getRegionNameRu() + ">>");
+            sb = new StringBuffer(LEFT_QUOTES)
+                    .append(region.getRegionNameRu())
+                    .append(RIGHT_QUOTES);
+            holder.regionName.setText(sb.toString());
         } else {
-            holder.regionName.setText("<<" + region.getRegionName() + ">>");
+            sb = new StringBuffer(LEFT_QUOTES)
+                    .append(region.getRegionName())
+                    .append(RIGHT_QUOTES);
+            holder.regionName.setText(sb.toString());
         }
         holder.countSectors.setText(region.getCountSectors() + "");
         holder.sectorsLabel.setText(StringUtils.getSectorLabelOnLanguage());

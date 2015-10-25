@@ -15,4 +15,11 @@
     <dimen name="region_small_label_text_size">11sp</dimen>
     <dimen name="region_name_text_size">29sp</dimen>
 
+    <!-- Сектор -->
+    <dimen name="sector_padding">5dp</dimen>
+    <dimen name="sector_margin">5dp</dimen>
+    <dimen name="sector_image_height">270dp</dimen>
+    <dimen name="sector_label_text_size">18sp</dimen>
+
+
 </resources>

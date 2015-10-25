@@ -19,10 +19,10 @@ import java.util.Map;
  */
 public class FavouriteProblemsCache {
 
-    private Map<Long, FavouriteProblemDTO> favouriteProblems;
+    private Map<Integer, FavouriteProblemDTO> favouriteProblems;
     public static boolean isCached = false;
 
-    public Map<Long, FavouriteProblemDTO> getFavouriteProblems() {
+    public Map<Integer, FavouriteProblemDTO> getFavouriteProblems() {
         return favouriteProblems;
     }
 
@@ -31,7 +31,7 @@ public class FavouriteProblemsCache {
      * @param problemId - id проблемы
      * @return true / false
      */
-    public boolean isContainProblem(Long problemId) {
+    public boolean isContainProblem(Integer problemId) {
         return favouriteProblems.containsKey(problemId);
     }
 
@@ -42,7 +42,7 @@ public class FavouriteProblemsCache {
      * @param nameRu - название на русском.
      * @param grade - категория.
      */
-    public void addProblemInFavourite(Long problemId, String name, String nameRu, String grade) {
+    public void addProblemInFavourite(Integer problemId, String name, String nameRu, String grade) {
         favouriteProblems.put(problemId, new FavouriteProblemDTO(problemId, name, nameRu, grade));
     }
 
@@ -50,7 +50,7 @@ public class FavouriteProblemsCache {
      * Удаление проблемы из збранных.
      * @param problemId - id проблемы.
      */
-    public void removeProblemFromFavourite(Long problemId) {
+    public void removeProblemFromFavourite(Integer problemId) {
         favouriteProblems.remove(problemId);
     }
 
@@ -80,7 +80,7 @@ public class FavouriteProblemsCache {
                     final FavouriteProblemsCache favouriteProblemsCache = FavouriteProblemsCache.getInstance();
                     @SuppressWarnings("unchecked")
                     final List<Problem> problems = commonDao.queryForEq(ICommonDtoConstants.FAVOURITE, 1);
-                    final Map<Long, FavouriteProblemDTO> dtoMap = new HashMap<>();
+                    final Map<Integer, FavouriteProblemDTO> dtoMap = new HashMap<>();
                     // TODO: FavouriteProblemDTO - static!!! Переделать?
                     if (problems != null && !problems.isEmpty()) {
                         for (Problem item : problems) {

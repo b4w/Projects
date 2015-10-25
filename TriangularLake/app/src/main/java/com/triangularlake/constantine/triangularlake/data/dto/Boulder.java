@@ -1,5 +1,6 @@
 package com.triangularlake.constantine.triangularlake.data.dto;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -10,7 +11,7 @@ import java.util.Collection;
 public class Boulder implements ICommonDtoConstants {
 
     @DatabaseField(id = true, canBeNull = false, generatedId = false, columnName = ID)
-    private Long id;                                // id камня
+    private int id;                                 // id камня
 
     @DatabaseField(columnName = BOULDER_DESC)
     private String boulderDesc;                     // описание камня на английском
@@ -33,11 +34,11 @@ public class Boulder implements ICommonDtoConstants {
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Photo photo;                            // ссылка oneToOne на Photo (id Photo)
 
-    @ForeignCollectionField(eager = true)
-    private Collection<Problem> problems;           // ссылка oneToMany на Problems
+    @ForeignCollectionField(eager = false)
+    private ForeignCollection<Problem> problems;           // ссылка oneToMany на Problems
 
-//    @ForeignCollectionField(eager = true)
-//    private Collection<Side> sides;                 // ссылка oneToMany на Side
+    @ForeignCollectionField(eager = false)
+    private ForeignCollection<Side> sides;                 // ссылка oneToMany на Side
 
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Sector sector;                          // ссылка manyToOne на Sector
@@ -46,11 +47,9 @@ public class Boulder implements ICommonDtoConstants {
         // need to ornLite
     }
 
-    public Boulder(Long id, String boulderDesc, String boulderDescRu, String boulderLat,
+    public Boulder(int id, String boulderDesc, String boulderDescRu, String boulderLat,
                    String boulderLon, String boulderName, String boulderNameRu, Photo photo,
-                   Collection<Problem> problems,
-//                   Collection<Side> sides,
-                   Sector sector) {
+                   ForeignCollection<Problem> problems, ForeignCollection<Side> sides, Sector sector) {
         this.id = id;
         this.boulderDesc = boulderDesc;
         this.boulderDescRu = boulderDescRu;
@@ -60,15 +59,15 @@ public class Boulder implements ICommonDtoConstants {
         this.boulderNameRu = boulderNameRu;
         this.photo = photo;
         this.problems = problems;
-//        this.sides = sides;
+        this.sides = sides;
         this.sector = sector;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -128,21 +127,21 @@ public class Boulder implements ICommonDtoConstants {
         this.photo = photo;
     }
 
-    public Collection<Problem> getProblems() {
+    public ForeignCollection<Problem> getProblems() {
         return problems;
     }
 
-    public void setProblems(Collection<Problem> problems) {
+    public void setProblems(ForeignCollection<Problem> problems) {
         this.problems = problems;
     }
-//
-//    public Collection<Side> getSides() {
-//        return sides;
-//    }
-//
-//    public void setSides(Collection<Side> sides) {
-//        this.sides = sides;
-//    }
+
+    public ForeignCollection<Side> getSides() {
+        return sides;
+    }
+
+    public void setSides(ForeignCollection<Side> sides) {
+        this.sides = sides;
+    }
 
     public Sector getSector() {
         return sector;

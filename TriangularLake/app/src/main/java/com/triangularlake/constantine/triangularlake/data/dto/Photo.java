@@ -8,7 +8,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Photo implements ICommonDtoConstants {
 
     @DatabaseField(id = true, canBeNull = false, generatedId = false, columnName = ID)
-    private Long id;                           // id фотографии
+    private int id;                            // id фотографии
 
     @DatabaseField(dataType = DataType.BYTE_ARRAY, columnName = PHOTO_DATA)
     private byte[] photoData;                  // фото
@@ -23,18 +23,18 @@ public class Photo implements ICommonDtoConstants {
         // need for ormLite
     }
 
-    public Photo(Long id, byte[] photoData, Boulder boulder, Problem problem) {
+    public Photo(int id, byte[] photoData, Boulder boulder, Problem problem) {
         this.id = id;
         this.photoData = photoData;
         this.boulder = boulder;
         this.problem = problem;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

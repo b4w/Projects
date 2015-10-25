@@ -8,7 +8,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Problem implements ICommonDtoConstants {
 
     @DatabaseField(id = true, canBeNull = false, generatedId = false, columnName = ID)
-    private Long id;                                // id проблемы
+    private int id;                                // id проблемы
 
     @DatabaseField(columnName = FRIEND_HELP)
     private boolean friendHelp;                     // нужна ли помощь страховщика
@@ -53,7 +53,7 @@ public class Problem implements ICommonDtoConstants {
         // need for ormLite
     }
 
-    public Problem(Long id, boolean friendHelp, int padCount, String problemDesc, String problemDescRu,
+    public Problem(int id, boolean friendHelp, int padCount, String problemDesc, String problemDescRu,
                    String problemGrade, String problemLetter, String problemName, String problemNameRu,
                    int warningLevel, Photo photo, Boulder boulder, Side side, int favourite) {
         this.id = id;
@@ -72,11 +72,11 @@ public class Problem implements ICommonDtoConstants {
         this.favourite = favourite;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

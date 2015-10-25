@@ -44,7 +44,7 @@ public class SideActivity extends AppCompatActivity {
     private long boulderId;
     private String boulderName;
 
-    private Map<Long, List<Long>> sideProblemsMap;
+    private Map<Integer, List<Integer>> sideProblemsMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +103,7 @@ public class SideActivity extends AppCompatActivity {
             if (commonDao != null) {
                 final List<Problem> problems = commonDao.queryForEq(ICommonDtoConstants.BOULDER_ID, boulderId);
                 sideProblemsMap = new LinkedHashMap<>();
-                List<Long> listProblems;
+                List<Integer> listProblems;
                 for (Problem problem : problems) {
                     if (!sideProblemsMap.containsKey(problem.getSide().getId())) {
                         listProblems = new ArrayList<>();

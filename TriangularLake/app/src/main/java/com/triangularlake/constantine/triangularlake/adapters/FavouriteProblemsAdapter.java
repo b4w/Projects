@@ -27,10 +27,16 @@ import java.util.Locale;
 public class FavouriteProblemsAdapter extends RecyclerView.Adapter<FavouriteProblemsAdapter.ViewHolder> {
 
     private final static String TAG = FavouriteProblemsAdapter.class.getSimpleName();
+    private final static int PROBLEM_IS_FAVOURITE = 1;
 
-    private List<FavouriteProblemDTO> problems;
+    private List<Problem> problems;
 
-    public FavouriteProblemsAdapter(List<FavouriteProblemDTO> problems) {
+    // TODO: тестовый метод DELETE!!!
+    public void setProblems(List<Problem> problems) {
+        this.problems = problems;
+    }
+
+    public FavouriteProblemsAdapter(List<Problem> problems) {
         this.problems = problems;
     }
 
@@ -42,19 +48,18 @@ public class FavouriteProblemsAdapter extends RecyclerView.Adapter<FavouriteProb
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final FavouriteProblemDTO problemDTO = problems.get(position);
+        final Problem problem = problems.get(position);
         if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
-            holder.name.setText(problemDTO.name);
+            holder.name.setText(problem.getProblemName());
         } else if (Locale.getDefault().getLanguage().equals(ICommonDtoConstants.RU)) {
-            holder.name.setText(problemDTO.nameRu);
+            holder.name.setText(problem.getProblemNameRu());
         } else {
-            holder.name.setText(problemDTO.name);
+            holder.name.setText(problem.getProblemName());
         }
-        holder.grade.setText(problemDTO.grade);
+        holder.grade.setText(problem.getProblemGrade());
 
         // добавление проблемы в избранное
-        final boolean isContainProblem = FavouriteProblemsCache.getInstance().isContainProblem(problemDTO.id);
-        if (isContainProblem) {
+        if (problem.getFavourite() == PROBLEM_IS_FAVOURITE) {
             holder.favourite.setImageResource(R.drawable.filter_route_square_blue_transparent);
         } else {
             holder.favourite.setImageResource(R.drawable.filter_route_square_grey_transparent);
@@ -62,18 +67,14 @@ public class FavouriteProblemsAdapter extends RecyclerView.Adapter<FavouriteProb
         holder.favourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final boolean isContainProblem = FavouriteProblemsCache.getInstance().isContainProblem(problemDTO.id);
-                if (isContainProblem) {
+                if (problem.getFavourite() == PROBLEM_IS_FAVOURITE) {
                     // удаление проблемы из избранного
                     holder.favourite.setImageResource(R.drawable.filter_route_square_grey_transparent);
-                    addRemoveFavouriteProblem(view.getContext(), problemDTO.id, 0);
-                    FavouriteProblemsCache.getInstance().removeProblemFromFavourite(problemDTO.id);
+                    addRemoveFavouriteProblem(view.getContext(), problem.getId(), 0);
                 } else {
                     // добавление проблемы в избранное
                     holder.favourite.setImageResource(R.drawable.filter_route_square_blue_transparent);
-                    addRemoveFavouriteProblem(view.getContext(), problemDTO.id, 1);
-                    FavouriteProblemsCache.getInstance().addProblemInFavourite(problemDTO.id,
-                            problemDTO.name, problemDTO.nameRu, problemDTO.grade);
+                    addRemoveFavouriteProblem(view.getContext(), problem.getId(), 1);
                 }
             }
         });
@@ -107,13 +108,13 @@ public class FavouriteProblemsAdapter extends RecyclerView.Adapter<FavouriteProb
     }
 
     // TODO: т.к. есть 2 одинаковых метода, то вынести в Abstract или static???
-    private void addRemoveFavouriteProblem(final Context context, Long problemId, int isAdded) {
+    private void addRemoveFavouriteProblem(final Context context, Integer problemId, int isAdded) {
         final CommonDao commonDao;
         try {
             commonDao = OrmConnect.INSTANCE.getDBConnect(context).getDaoByClass(Problem.class);
             if (commonDao != null) {
                 @SuppressWarnings("unchecked")
-                final UpdateBuilder<Problem, Long> updateBuilder = commonDao.updateBuilder();
+                final UpdateBuilder<Problem, Integer> updateBuilder = commonDao.updateBuilder();
                 updateBuilder.where().eq(ICommonDtoConstants.ID, problemId);
                 updateBuilder.updateColumnValue(ICommonDtoConstants.FAVOURITE, isAdded);
                 updateBuilder.update();

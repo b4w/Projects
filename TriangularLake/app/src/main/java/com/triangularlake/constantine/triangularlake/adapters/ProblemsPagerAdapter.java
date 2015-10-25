@@ -14,9 +14,9 @@ import java.util.Map;
 public class ProblemsPagerAdapter extends FragmentPagerAdapter {
 
     private int numberOfPages;
-    private Map<Long, List<Long>> sideProblemsMap;
+    private Map<Integer, List<Integer>> sideProblemsMap;
 
-    public ProblemsPagerAdapter(FragmentManager fm, Map<Long, List<Long>> sideProblemsMap) {
+    public ProblemsPagerAdapter(FragmentManager fm, Map<Integer, List<Integer>> sideProblemsMap) {
         super(fm);
         this.sideProblemsMap = sideProblemsMap;
         // TODO: посмотреть ошибку, иногда sideProblemsMap == null
@@ -28,12 +28,12 @@ public class ProblemsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Fragment fragment = SideFragment.newInstance();
-        List<Long> problems = null;
+        List<Integer> problems = null;
         final Bundle args = new Bundle();
 
         int index = 0;
         // т.к. map -> linkedHashMap - берем значение по индексу.
-        for (Long item : sideProblemsMap.keySet()) {
+        for (Integer item : sideProblemsMap.keySet()) {
             if (position == index) {
                 problems = sideProblemsMap.get(item);
                 args.putLong(ICommonDtoConstants.SIDE_ID, item);
@@ -42,12 +42,14 @@ public class ProblemsPagerAdapter extends FragmentPagerAdapter {
             index++;
         }
 
-        long[] array = new long[problems.size()];
-        for (int i = 0; i < problems.size(); i++) {
-            array[i] = problems.get(i);
+        if (problems != null) {
+            int[] array = new int[problems.size()];
+            for (int i = 0; i < problems.size(); i++) {
+                array[i] = problems.get(i);
+            }
+            args.putIntArray(ICommonDtoConstants.PROBLEM_NUMBERS, array);
         }
 
-        args.putLongArray(ICommonDtoConstants.PROBLEM_NUMBERS, array);
         fragment.setArguments(args);
         return fragment;
     }

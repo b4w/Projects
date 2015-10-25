@@ -33,6 +33,9 @@ import java.util.List;
 public class SectorActivity extends AppCompatActivity implements BoulderProblems.IBoulderProblemsLoaderCallBack {
     private static final String TAG = SectorActivity.class.getSimpleName();
 
+    private static final String LEFT_QUOTES = "<<";
+    private static final String RIGHT_QUOTES = ">>";
+
     private ImageView sectorPhoto;
     private TextView sectorName;
     private TextView description;
@@ -124,7 +127,7 @@ public class SectorActivity extends AppCompatActivity implements BoulderProblems
         // TODO: переделать загрузку?
         new BoulderProblems.BoulderProblemsAsyncLoader(sectorId, getApplicationContext(), callback).execute();
         // название сектора
-        final String sectorLabel = "<<" + labelSectorName + ">>";
+        final String sectorLabel = LEFT_QUOTES + labelSectorName + RIGHT_QUOTES;
         sectorName.setText(sectorLabel);
         // описание сектора
         description.setText(sectorDescription);
