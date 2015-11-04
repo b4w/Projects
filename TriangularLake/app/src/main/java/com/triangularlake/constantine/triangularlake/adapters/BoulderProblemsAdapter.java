@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class BoulderProblemsAdapter extends RecyclerView.Adapter<BoulderProblemsAdapter.ViewHolder> {
+    private final static int PROBLEM_IS_FAVOURITE = 1;
 
     private List<Problem> problems;
 
@@ -51,8 +52,7 @@ public class BoulderProblemsAdapter extends RecyclerView.Adapter<BoulderProblems
         viewHolder.grade.setText(problem.getProblemGrade());
 
         // добавление проблемы в избранное
-        boolean isContainProblem = FavouriteProblemsCache.getInstance().isContainProblem(problem.getId());
-        if (isContainProblem) {
+        if (problem.getFavourite() == PROBLEM_IS_FAVOURITE) {
             viewHolder.favourite.setImageResource(R.drawable.filter_route_square_blue_transparent);
         } else {
             viewHolder.favourite.setImageResource(R.drawable.filter_route_square_grey_transparent);
@@ -60,18 +60,14 @@ public class BoulderProblemsAdapter extends RecyclerView.Adapter<BoulderProblems
         viewHolder.favourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isContainProblem = FavouriteProblemsCache.getInstance().isContainProblem(problem.getId());
-                if (isContainProblem) {
+                if (problem.getFavourite() == PROBLEM_IS_FAVOURITE) {
                     // удаление проблемы из избранного
                     viewHolder.favourite.setImageResource(R.drawable.filter_route_square_grey_transparent);
                     addRemoveFavouriteProblem(view.getContext(), problem.getId(), 0);
-                    FavouriteProblemsCache.getInstance().removeProblemFromFavourite(problem.getId());
                 } else {
                     // добавление проблемы в избранное
                     viewHolder.favourite.setImageResource(R.drawable.filter_route_square_blue_transparent);
                     addRemoveFavouriteProblem(view.getContext(), problem.getId(), 1);
-                    FavouriteProblemsCache.getInstance().addProblemInFavourite(problem.getId(),
-                            problem.getProblemName(), problem.getProblemNameRu(), problem.getProblemGrade());
                 }
             }
         });
@@ -94,7 +90,7 @@ public class BoulderProblemsAdapter extends RecyclerView.Adapter<BoulderProblems
 
         private Context context;             // контекст активности
         private TextView name;               // название проблемы
-        private ImageView favourite;          // проблема добавлена в избранное
+        private ImageView favourite;         // проблема добавлена в избранное
         private TextView grade;              // категория проблемы
 
         public ViewHolder(View itemView) {

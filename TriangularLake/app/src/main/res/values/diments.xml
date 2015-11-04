@@ -18,7 +18,7 @@
     <!-- Сектор -->
     <dimen name="sector_padding">5dp</dimen>
     <dimen name="sector_margin">5dp</dimen>
-    <dimen name="sector_image_height">270dp</dimen>
+    <dimen name="sector_image_height">220dp</dimen>
     <dimen name="sector_label_text_size">18sp</dimen>
 
 

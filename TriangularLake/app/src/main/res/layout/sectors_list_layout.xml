@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/background">
 
     <ImageView
         android:id="@+id/sectors_list_sector_photo"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/sector_image_height"/>
+        android:layout_height="@dimen/sector_image_height"
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/sectors_list_sector_label"
         android:layout_width="wrap_content"
-        android:layout_height="18dp"
+        android:layout_height="22dp"
         android:text="@string/sector_upper"
         android:textColor="@color/text_main"
         android:textSize="15sp"
@@ -20,14 +21,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="@dimen/sector_padding"
+        android:gravity="center"
         android:layout_marginBottom="80dp" />
 
     <TextView
         android:id="@+id/sectors_list_sector_name"
-        android:layout_width="200dp"
-        android:layout_height="18dp"
+        android:layout_width="250dp"
+        android:layout_height="22dp"
         android:layout_alignTop="@+id/sectors_list_sector_label"
-        android:layout_toEndOf="@+id/sectors_list_sector_label"
         android:layout_toRightOf="@+id/sectors_list_sector_label"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sector_label_text_size"

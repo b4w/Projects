@@ -21,13 +21,19 @@ import android.widget.TextView;
 
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.SectorBouldersAdapter;
+import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
+import com.triangularlake.constantine.triangularlake.data.dto.Boulder;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
+import com.triangularlake.constantine.triangularlake.data.dto.Sector;
+import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
 import com.triangularlake.constantine.triangularlake.pojo.BoulderProblems;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
 
 import org.solovyev.android.views.llm.DividerItemDecoration;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SectorActivity extends AppCompatActivity implements BoulderProblems.IBoulderProblemsLoaderCallBack {
@@ -125,7 +131,38 @@ public class SectorActivity extends AppCompatActivity implements BoulderProblems
         // загрузка списка камней и проблем
         callback = this;
         // TODO: переделать загрузку?
-        new BoulderProblems.BoulderProblemsAsyncLoader(sectorId, getApplicationContext(), callback).execute();
+//        new BoulderProblems.BoulderProblemsAsyncLoader(sectorId, getApplicationContext(), callback).execute();
+
+        List<BoulderProblems> boulderProblemsList = new ArrayList<>();
+        byte[] sectorPhoto;
+
+        try {
+            final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Sector.class);
+            final Sector sector = (Sector) commonDao.queryForEq("_id", sectorId).get(0);
+            if (sector != null) {
+                sectorPhoto = sector.getSectorPhoto();
+                for (Boulder boulder : sector.getBoulders()) {
+                    boulderProblemsList.add(new BoulderProblems(
+                            boulder.getId(),
+                            boulder.getPhoto().getPhotoData(),
+                            boulder.getBoulderName(),
+                            boulder.getBoulderNameRu(),
+                            boulder.getProblems()));
+                }
+                // фотография сектора
+                final Bitmap bitmap = BitmapFactory.decodeByteArray(sectorPhoto, 0, sectorPhoto.length);
+                this.sectorPhoto.setImageBitmap(bitmap);
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "BoulderProblemsAsyncLoader Error! " + e.getMessage());
+        }
+        sectorBouldersAdapter = new SectorBouldersAdapter(boulderProblemsList);
+        sectorLayoutBouldersRecycleView.setHasFixedSize(true);
+        final LinearLayoutManager layoutManager = new org.solovyev.android.views.llm.LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        sectorLayoutBouldersRecycleView.addItemDecoration(new DividerItemDecoration(this, null));
+        sectorLayoutBouldersRecycleView.setLayoutManager(layoutManager);
+        sectorLayoutBouldersRecycleView.setAdapter(sectorBouldersAdapter);
+
         // название сектора
         final String sectorLabel = LEFT_QUOTES + labelSectorName + RIGHT_QUOTES;
         sectorName.setText(sectorLabel);

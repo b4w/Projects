@@ -16,7 +16,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/sectors_layout_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"/>
 
         <include
             android:id="@+id/sectors_layout_toolbar"
