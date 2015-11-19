@@ -4,6 +4,6 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@color/transparent_grey"
-    android:theme="@style/GalaxyZooThemeToolbarDarkOverflow"
-    app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar"/>
+    android:background="@color/transparent_grey"/>
+    <!--android:theme="@style/GalaxyZooThemeToolbarDarkOverflow"-->
+    <!--app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar"/>-->

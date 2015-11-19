@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey"
+    android:padding="10dp">
+
+    <!-- Footer с описанием, координатами, кнопками "Карта" и "Меню" -->
+
+    <TextView
+        android:id="@+id/side_footer_layout_coordinate_label"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/grey"
+        android:text="Координаты" />
+
+    <TextView
+        android:id="@+id/side_footer_layout_coordinate"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/side_footer_layout_coordinate_label"
+        android:background="@color/grey" />
+
+    <Button
+        android:id="@+id/side_footer_layout_button_map"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/side_footer_layout_coordinate"
+        android:layout_marginLeft="20dp"
+        android:background="@color/text_main"
+        android:text="@string/look_on_map_upper" />
+
+    <ImageButton
+        android:id="@+id/side_footer_layout_button_menu"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/side_footer_layout_button_map"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/text_main" />
+
+</RelativeLayout>

@@ -3,7 +3,8 @@ package com.triangularlake.constantine.triangularlake.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.os.AsyncTask;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -19,14 +20,11 @@ import android.widget.Toast;
 
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.RegionsAdapter;
-import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
-import com.triangularlake.constantine.triangularlake.data.dto.Region;
-import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
-import com.triangularlake.constantine.triangularlake.pojo.FavouriteProblemsCache;
-import com.triangularlake.constantine.triangularlake.pojo.SectorsCache;
+import com.triangularlake.constantine.triangularlake.data.helpers.SQLiteHelper;
+import com.triangularlake.constantine.triangularlake.data.pojo.PojosKt;
+import com.triangularlake.constantine.triangularlake.data.pojo.Region;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,16 +48,6 @@ public class RegionsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.regions_layout);
-
-        // кеширование секторов в отдельном потоке
-        if (!SectorsCache.isCached) {
-            new SectorsCache.AsyncLoadSectors(getApplicationContext()).execute();
-        }
-
-//        // кеширование избранных проблем в отдельном потоке
-//        if (!FavouriteProblemsCache.isCached) {
-//            new FavouriteProblemsCache.AsyncLoaderFavouriteRoutes(getApplicationContext()).execute();
-//        }
 
         initXmlFields();
         initListeners();
@@ -91,10 +79,10 @@ public class RegionsActivity extends Activity {
         // открываем выбранный регион
         regionsAdapterCallback = new RegionsAdapter.IRegionsAdapterCallback() {
             @Override
-            public void openRegionOnId(long regionId) {
+            public void openRegionOnId(int regionId) {
                 Log.d(TAG, "openChosenRegionOnId() start");
                 Intent intent = null;
-                switch ((int) regionId) {
+                switch (regionId) {
                     case REGION_LIETLAHTI_ID:
                         intent = new Intent(getApplicationContext(), SectorsActivity.class);
                         intent.putExtra(IStringConstants.SECTOR_NAME, getString(R.string.lietlahti));
@@ -175,49 +163,31 @@ public class RegionsActivity extends Activity {
     }
 
     /**
-     * Загрузка данных по регионам из БД в AsyncTask
+     * Загрузка данных по регионам из БД.
      */
     private void loadData() {
         Log.d(TAG, "loadData() start");
-        new AsyncLoadDataFromDB().execute();
+        final SQLiteDatabase db = new SQLiteHelper(getApplicationContext()).getReadableDatabase();
+        final Cursor cursor = db.rawQuery("select * from REGIONS", null);
+        final List<Region> regions = new ArrayList<>();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            regions.add(PojosKt.getNewRegionFromCursor(cursor));
+            cursor.moveToNext();
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        // TODO: разобраться с открытием и закрытием БД
+        if (db.isOpen()) {
+            db.close();
+        }
+        // инициализация адаптера + добаление слушателя события
+        regionsAdapter = new RegionsAdapter(regions, regionsAdapterCallback);
+        // инициализация RecyclerView
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        regionsLayoutRecyclerView.setLayoutManager(linearLayoutManager);
+        regionsLayoutRecyclerView.setAdapter(regionsAdapter);
         Log.d(TAG, "loadData() done");
-    }
-
-    /**
-     * Асинхронная загрузка Регионов из БД.
-     * Инициализация адаптера.
-     */
-    class AsyncLoadDataFromDB extends AsyncTask<Void, Void, List<Region>> {
-
-        @Override
-        protected List<Region> doInBackground(Void... voids) {
-            Log.d(TAG, "doInBackground() start");
-            List<Region> regions = new ArrayList<>();
-            try {
-                final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Region.class);
-                if (commonDao != null) {
-                    regions = commonDao.queryForAll();
-                } else {
-                    Log.e(TAG, "Error when load Regions");
-                }
-            } catch (SQLException e) {
-                Log.e(TAG, e.getMessage());
-            }
-            Log.d(TAG, "doInBackground() done");
-            return regions;
-        }
-
-        @Override
-        protected void onPostExecute(List<Region> regions) {
-            super.onPostExecute(regions);
-            Log.d(TAG, "onPostExecute() start");
-            // инициализация адаптера + добаление слушателя события
-            regionsAdapter = new RegionsAdapter(regions, regionsAdapterCallback);
-            // инициализация RecyclerView
-            final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-            regionsLayoutRecyclerView.setLayoutManager(linearLayoutManager);
-            regionsLayoutRecyclerView.setAdapter(regionsAdapter);
-            Log.d(TAG, "onPostExecute() done");
-        }
     }
 }

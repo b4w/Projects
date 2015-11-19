@@ -11,13 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.activities.SideActivity;
-import com.triangularlake.constantine.triangularlake.data.dto.Boulder;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
-import com.triangularlake.constantine.triangularlake.pojo.BoulderProblems;
+import com.triangularlake.constantine.triangularlake.data.pojo.BoulderProblems;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 

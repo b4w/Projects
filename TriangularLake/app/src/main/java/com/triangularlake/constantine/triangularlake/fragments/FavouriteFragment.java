@@ -1,7 +1,8 @@
 package com.triangularlake.constantine.triangularlake.fragments;
 
 import android.app.Fragment;
-import android.os.AsyncTask;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,16 +14,14 @@ import android.view.ViewGroup;
 
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.FavouriteProblemsAdapter;
-import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
-import com.triangularlake.constantine.triangularlake.data.dto.Problem;
-import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
+import com.triangularlake.constantine.triangularlake.data.helpers.SQLiteHelper;
+import com.triangularlake.constantine.triangularlake.data.pojo.Problem;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FavouriteFragment extends Fragment {
     private static final String TAG = FavouriteFragment.class.getSimpleName();
-    private static final String FAVOURITE = "favourite";
 
     private RecyclerView fragmentFavoritesProblems;
     private FavouriteProblemsAdapter favouriteProblemsAdapter;
@@ -50,6 +49,7 @@ public class FavouriteFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         initXmlFields();
         initListeners();
+        initListAdapter();
     }
 
     private void initXmlFields() {
@@ -68,35 +68,42 @@ public class FavouriteFragment extends Fragment {
 
     private void loadData() {
         Log.d(TAG, "loadData() start");
-        new AsyncLoadProblems().execute();
+        final SQLiteDatabase db = new SQLiteHelper(getActivity().getApplicationContext()).getReadableDatabase();
+        final Cursor problemCursor = db.rawQuery("select * from PROBLEMS where favourite is 1", null);
+        final List<Problem> problems = new ArrayList<>();
+        problemCursor.moveToFirst();
+        while (!problemCursor.isAfterLast()) {
+            problems.add(new Problem(problemCursor.getInt(0),
+                    problemCursor.getInt(1) > 0,
+                    problemCursor.getInt(2),
+                    problemCursor.getString(3) != null ? problemCursor.getString(3) : "",
+                    problemCursor.getString(4) != null ? problemCursor.getString(4) : "",
+                    problemCursor.getString(5),
+                    problemCursor.getString(6),
+                    problemCursor.getString(7),
+                    problemCursor.getString(8),
+                    problemCursor.getInt(9),
+                    problemCursor.getInt(10),
+                    problemCursor.getInt(11),
+                    problemCursor.getInt(12),
+                    problemCursor.getInt(13) > 0));
+            problemCursor.moveToNext();
+        }
+        problemCursor.close();
+        // TODO: разобраться с открытием и закрытием БД
+        if (db.isOpen()) {
+            db.close();
+        }
+        favouriteProblemsAdapter = new FavouriteProblemsAdapter(problems);
         Log.d(TAG, "loadData() done");
     }
 
-    class AsyncLoadProblems extends AsyncTask <Void, Void, List<Problem>> {
-        // TODO: С кешем было вроде быстрее, чем с достованием из бд.
-        @Override
-        protected List<Problem> doInBackground(Void... voids) {
-            Log.d(TAG, "async load problems doInBackground() start");
-            try {
-                final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
-                if (commonDao != null) {
-                    return commonDao.queryForEq(FAVOURITE, 1);
-                }
-            } catch (SQLException e) {
-                Log.e(TAG, "Error! " + e.getMessage());
-            }
-            Log.d(TAG, "async load problems doInBackground() done");
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Problem> problems) {
-            super.onPostExecute(problems);
-            // добавление данных в адаптер и RecyclerView
-            final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-            favouriteProblemsAdapter = new FavouriteProblemsAdapter(problems);
-            fragmentFavoritesProblems.setLayoutManager(layoutManager);
-            fragmentFavoritesProblems.setAdapter(favouriteProblemsAdapter);
-        }
+    private void initListAdapter() {
+        Log.d(TAG, "initListAdapter() start");
+        // добавление данных в адаптер и RecyclerView
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        fragmentFavoritesProblems.setLayoutManager(layoutManager);
+        fragmentFavoritesProblems.setAdapter(favouriteProblemsAdapter);
+        Log.d(TAG, "initListAdapter() done");
     }
 }

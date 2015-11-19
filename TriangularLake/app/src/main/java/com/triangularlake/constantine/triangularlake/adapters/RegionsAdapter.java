@@ -10,8 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.triangularlake.constantine.triangularlake.R;
-import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
-import com.triangularlake.constantine.triangularlake.data.dto.Region;
+import com.triangularlake.constantine.triangularlake.data.pojo.Region;
 import com.triangularlake.constantine.triangularlake.utils.StringUtils;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class RegionsAdapter extends RecyclerView.Adapter<RegionsAdapter.ViewHold
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final long regionId = regions.get(viewHolder.getAdapterPosition()).getId();
+                final int regionId = regions.get(viewHolder.getAdapterPosition()).getId();
                 callback.openRegionOnId(regionId);
             }
         });
@@ -94,6 +93,6 @@ public class RegionsAdapter extends RecyclerView.Adapter<RegionsAdapter.ViewHold
 
     // интерфейс для открытия выбранного региона
     public interface IRegionsAdapterCallback {
-        void openRegionOnId(long regionId);
+        void openRegionOnId(int regionId);
     }
 }

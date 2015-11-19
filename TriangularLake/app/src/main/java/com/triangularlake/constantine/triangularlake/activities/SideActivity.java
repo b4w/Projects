@@ -2,6 +2,8 @@ package com.triangularlake.constantine.triangularlake.activities;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.PagerAdapter;
@@ -13,17 +15,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.ProblemsPagerAdapter;
-import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
-import com.triangularlake.constantine.triangularlake.data.dto.Problem;
-import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
+import com.triangularlake.constantine.triangularlake.data.helpers.SQLiteHelper;
+import com.triangularlake.constantine.triangularlake.data.pojo.PojosKt;
+import com.triangularlake.constantine.triangularlake.data.pojo.Problem;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -68,7 +72,7 @@ public class SideActivity extends AppCompatActivity {
     private void initXmlFields() {
         Log.d(TAG, "initXmlFields() start");
         sideLayoutContainerViewPager = (ViewPager) findViewById(R.id.side_layout_container_view_pager);
-        buttonMenu = (ImageButton) findViewById(R.id.side_layout_button_menu);
+//        buttonMenu = (ImageButton) findViewById(R.id.side_layout_button_menu);
         // инициализация бокового меню
         drawerLayout = (DrawerLayout) findViewById(R.id.side_layout_drawer);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, null, R.string.navigation_menu_open, R.string.navigation_menu_close);
@@ -98,25 +102,30 @@ public class SideActivity extends AppCompatActivity {
 
     private void loadData() {
         Log.d(TAG, "loadData() start");
-        try {
-            final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Problem.class);
-            if (commonDao != null) {
-                final List<Problem> problems = commonDao.queryForEq(ICommonDtoConstants.BOULDER_ID, boulderId);
-                sideProblemsMap = new LinkedHashMap<>();
-                List<Integer> listProblems;
-                for (Problem problem : problems) {
-                    if (!sideProblemsMap.containsKey(problem.getSide().getId())) {
-                        listProblems = new ArrayList<>();
-                        listProblems.add(problem.getId());
-                        sideProblemsMap.put(problem.getSide().getId(), listProblems);
-                    } else {
-                        listProblems = sideProblemsMap.get(problem.getSide().getId());
-                        listProblems.add(problem.getId());
-                    }
-                }
+        final SQLiteDatabase db = new SQLiteHelper(getApplicationContext()).getReadableDatabase();
+        final Cursor problemCursor = db.rawQuery("select * from PROBLEMS where boulder_id = ?", new String[]{boulderId + ""});
+        final List<Problem> problems = new ArrayList<>();
+        problemCursor.moveToFirst();
+        while (!problemCursor.isAfterLast()) {
+            problems.add(PojosKt.getNewProblemFromCursor(problemCursor));
+            problemCursor.moveToNext();
+        }
+        problemCursor.close();
+        // TODO: разобраться с открытием и закрытием БД
+        db.close();
+
+        // т.к. map -> linkedHashMap - берем значение по индексу.
+        sideProblemsMap = new LinkedHashMap<>();
+        List<Integer> listProblems;
+        for (Problem problem : problems) {
+            if (!sideProblemsMap.containsKey(problem.getSideId())) {
+                listProblems = new ArrayList<>();
+                listProblems.add(problem.getId());
+                sideProblemsMap.put(problem.getSideId(), listProblems);
+            } else {
+                listProblems = sideProblemsMap.get(problem.getSideId());
+                listProblems.add(problem.getId());
             }
-        } catch (SQLException e) {
-            Log.e(TAG, "SideActivity initXmlFields() Error! " + e.getMessage());
         }
 
         problemsPagerAdapter = new ProblemsPagerAdapter(getSupportFragmentManager(), sideProblemsMap);
@@ -127,14 +136,14 @@ public class SideActivity extends AppCompatActivity {
     private void initListeners() {
         Log.d(TAG, "initListeners() start");
         // add look at map click();
-        buttonMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (drawerLayout != null && navigationView != null) {
-                    drawerLayout.openDrawer(navigationView);
-                }
-            }
-        });
+//        buttonMenu.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (drawerLayout != null && navigationView != null) {
+//                    drawerLayout.openDrawer(navigationView);
+//                }
+//            }
+//        });
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {

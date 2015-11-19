@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
-import com.triangularlake.constantine.triangularlake.data.dto.Sector;
+import com.triangularlake.constantine.triangularlake.data.pojo.Sector;
 import com.triangularlake.constantine.triangularlake.utils.StringUtils;
 
 import java.util.List;
@@ -51,8 +51,7 @@ public class SectorsAdapter extends RecyclerView.Adapter<SectorsAdapter.ViewHold
                     sbSectorDesc.append(sector.getSectorDesc());
                     sbSectorName.append(sector.getSectorName());
                 }
-                final long sectorId = sectors.get(viewHolder.getAdapterPosition()).getId();
-                sectorsAdapterCallback.openChosenSector(sbSectorName.toString(), sbSectorDesc.toString(), sectorId);
+                sectorsAdapterCallback.openChosenSector(sbSectorName.toString(), sbSectorDesc.toString(), sector.getId());
             }
         });
         return viewHolder;
@@ -114,6 +113,6 @@ public class SectorsAdapter extends RecyclerView.Adapter<SectorsAdapter.ViewHold
 
     // интерфейс для открытия выбранного сектора
     public interface ISectorsAdapterCallback {
-        void openChosenSector(String sectorName, String sectorDescription, long sectorId);
+        void openChosenSector(String sectorName, String sectorDescription, int sectorId);
     }
 }

@@ -2,36 +2,37 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/fragment_side_linear_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="50dp"/>
+    <!--<LinearLayout-->
+    <!--android:id="@+id/fragment_side_linear_layout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:paddingTop="50dp" />-->
 
-    <!--<ImageView-->
-        <!--android:id="@+id/fragment_side_image_side"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="300dp" />-->
-
-    <ImageView
-        android:id="@+id/fragment_side_line"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="@color/grey"
-        android:layout_below="@+id/fragment_side_linear_layout"/>
-
-    <!--TODO: Разобраться с динамической высотой!!!-->
-    <com.triangularlake.constantine.triangularlake.utils.MyExpandableListView
+    <!-- Раскрывающийся список трасс выбранной стороны (Side) камня -->
+    <ExpandableListView
         android:id="@+id/fragment_side_exlist_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:indicatorLeft="250dp"
-        android:indicatorRight="300dp"
-        android:layout_below="@+id/fragment_side_line"/>
+        android:indicatorRight="300dp" />
+    <!--android:layout_below="@+id/fragment_side_linear_layout"-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/fragment_side_image_side"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="300dp" />-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/fragment_side_line"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="10dp"-->
+    <!--android:background="@color/grey"-->
+    <!--android:layout_below="@+id/fragment_side_linear_layout"/>-->
+
 
 </RelativeLayout>

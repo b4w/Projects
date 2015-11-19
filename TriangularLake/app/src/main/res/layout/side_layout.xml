@@ -10,75 +10,25 @@
     tools:openDrawer="end">
 
     <RelativeLayout
+        android:id="@+id/side_layout_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ScrollView
+        <android.support.v4.view.ViewPager
+            android:id="@+id/side_layout_container_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.triangularlake.constantine.triangularlake.utils.MyViewPager
-                    android:id="@+id/side_layout_container_view_pager"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/side_layout_container_view_pager"
-                    android:background="@color/grey"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:id="@+id/side_layout_coordinate_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="20dp"
-                        android:background="@color/grey"
-                        android:text="Координаты" />
-
-                    <TextView
-                        android:id="@+id/side_layout_coordinate"
-                        android:layout_width="match_parent"
-                        android:layout_height="20dp"
-                        android:layout_below="@id/side_layout_coordinate_label"
-                        android:background="@color/grey" />
-
-                    <Button
-                        android:id="@+id/side_layout_button_map"
-                        android:layout_width="200dp"
-                        android:layout_height="50dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/side_layout_coordinate"
-                        android:layout_marginLeft="20dp"
-                        android:background="@color/text_main"
-                        android:text="@string/look_on_map_upper" />
-
-                    <ImageButton
-                        android:id="@+id/side_layout_button_menu"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@id/side_layout_button_map"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginRight="20dp"
-                        android:background="@color/text_main" />
-
-                </RelativeLayout>
-            </RelativeLayout>
-        </ScrollView>
+        <FrameLayout
+            android:id="@+id/side_layout_footer"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/side_layout_container_view_pager"
+            android:background="@color/abc_search_url_text_normal"/>
 
         <include
             android:id="@+id/side_layout_toolbar"
             layout="@layout/toolbar" />
-
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView

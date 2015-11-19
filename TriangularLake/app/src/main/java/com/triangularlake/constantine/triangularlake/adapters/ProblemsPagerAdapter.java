@@ -36,7 +36,7 @@ public class ProblemsPagerAdapter extends FragmentPagerAdapter {
         for (Integer item : sideProblemsMap.keySet()) {
             if (position == index) {
                 problems = sideProblemsMap.get(item);
-                args.putLong(ICommonDtoConstants.SIDE_ID, item);
+                args.putInt(ICommonDtoConstants.SIDE_ID, item);
                 break;
             }
             index++;

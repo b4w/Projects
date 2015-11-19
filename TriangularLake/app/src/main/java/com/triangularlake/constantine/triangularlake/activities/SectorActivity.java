@@ -2,6 +2,8 @@ package com.triangularlake.constantine.triangularlake.activities;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -14,29 +16,29 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.SectorBouldersAdapter;
-import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
-import com.triangularlake.constantine.triangularlake.data.dto.Boulder;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
-import com.triangularlake.constantine.triangularlake.data.dto.Sector;
-import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
-import com.triangularlake.constantine.triangularlake.pojo.BoulderProblems;
+import com.triangularlake.constantine.triangularlake.data.helpers.SQLiteHelper;
+import com.triangularlake.constantine.triangularlake.data.pojo.Boulder;
+import com.triangularlake.constantine.triangularlake.data.pojo.BoulderProblems;
+import com.triangularlake.constantine.triangularlake.data.pojo.PojosKt;
+import com.triangularlake.constantine.triangularlake.data.pojo.Problem;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
 
 import org.solovyev.android.views.llm.DividerItemDecoration;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class SectorActivity extends AppCompatActivity implements BoulderProblems.IBoulderProblemsLoaderCallBack {
+public class SectorActivity extends AppCompatActivity {
     private static final String TAG = SectorActivity.class.getSimpleName();
 
     private static final String LEFT_QUOTES = "<<";
@@ -47,10 +49,9 @@ public class SectorActivity extends AppCompatActivity implements BoulderProblems
     private TextView description;
     private RecyclerView sectorLayoutBouldersRecycleView;
     private Toolbar toolbar;
-    private Button buttonMap;
     private ImageButton buttonMenu;
 
-    private Long sectorId;
+    private int sectorId;
     private String labelSectorName;
     private String sectorDescription;
 
@@ -59,7 +60,6 @@ public class SectorActivity extends AppCompatActivity implements BoulderProblems
     private NavigationView navigationView;
 
     private SectorBouldersAdapter sectorBouldersAdapter;
-    private BoulderProblems.IBoulderProblemsLoaderCallBack callback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +71,7 @@ public class SectorActivity extends AppCompatActivity implements BoulderProblems
         initXmlFields();
         loadData();
         initListeners();
+        initListAdapter();
     }
 
     @Override
@@ -103,7 +104,7 @@ public class SectorActivity extends AppCompatActivity implements BoulderProblems
 
     private void initInputValues() {
         Log.d(TAG, "initInputValues() start");
-        sectorId = getIntent().getExtras().getLong(ICommonDtoConstants.SECTOR_ID);
+        sectorId = getIntent().getExtras().getInt(ICommonDtoConstants.SECTOR_ID);
         labelSectorName = getIntent().getExtras().getString(ICommonDtoConstants.SECTOR_NAME);
         sectorDescription = getIntent().getExtras().getString(ICommonDtoConstants.SECTOR_DESCRIPTION);
         Log.d(TAG, "initInputValues() done");
@@ -128,40 +129,56 @@ public class SectorActivity extends AppCompatActivity implements BoulderProblems
 
     private void loadData() {
         Log.d(TAG, "loadData() start");
-        // загрузка списка камней и проблем
-        callback = this;
-        // TODO: переделать загрузку?
-//        new BoulderProblems.BoulderProblemsAsyncLoader(sectorId, getApplicationContext(), callback).execute();
 
-        List<BoulderProblems> boulderProblemsList = new ArrayList<>();
-        byte[] sectorPhoto;
+        final List<BoulderProblems> boulderProblemsList = new ArrayList<>();
+        final SQLiteDatabase db = new SQLiteHelper(getApplicationContext()).getReadableDatabase();
 
-        try {
-            final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getApplicationContext()).getDaoByClass(Sector.class);
-            final Sector sector = (Sector) commonDao.queryForEq("_id", sectorId).get(0);
-            if (sector != null) {
-                sectorPhoto = sector.getSectorPhoto();
-                for (Boulder boulder : sector.getBoulders()) {
-                    boulderProblemsList.add(new BoulderProblems(
-                            boulder.getId(),
-                            boulder.getPhoto().getPhotoData(),
-                            boulder.getBoulderName(),
-                            boulder.getBoulderNameRu(),
-                            boulder.getProblems()));
-                }
-                // фотография сектора
-                final Bitmap bitmap = BitmapFactory.decodeByteArray(sectorPhoto, 0, sectorPhoto.length);
-                this.sectorPhoto.setImageBitmap(bitmap);
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, "BoulderProblemsAsyncLoader Error! " + e.getMessage());
+        // фотография выбранного сектора
+        final Cursor sectorCursor = db.rawQuery("select sector_photo from SECTORS where _id = ?", new String[]{sectorId + ""});
+        sectorCursor.moveToFirst();
+        while (!sectorCursor.isAfterLast()) {
+            final byte[] sectorPhoto = sectorCursor.getBlob(0);
+            final Bitmap bitmap = BitmapFactory.decodeByteArray(sectorPhoto, 0, sectorPhoto.length);
+            this.sectorPhoto.setImageBitmap(bitmap);
+            sectorCursor.moveToNext();
+        }
+        sectorCursor.close();
+
+        // список фотографий
+        // что бы не делать из цикла запрос, вытаскиваем сразу все фото для боулдерингов
+        final Map<Integer, byte[]> photosMap = new HashMap<>();
+        final Cursor photoCursor = db.rawQuery("select boulder_id, photo_data from PHOTOS where boulder_id is not null", null);
+        photoCursor.moveToFirst();
+        while (!photoCursor.isAfterLast()) {
+            photosMap.put(photoCursor.getInt(0), photoCursor.getBlob(1));
+            photoCursor.moveToNext();
+        }
+        photoCursor.close();
+
+        // список боулдерингов
+        final List<Boulder> boulders = new ArrayList<>();
+        final Cursor boulderCursor = db.rawQuery("select * from BOULDERS where sector_id = ?", new String[]{sectorId + ""});
+        boulderCursor.moveToFirst();
+        while (!boulderCursor.isAfterLast()) {
+            boulders.add(PojosKt.getNewBoulderFromCursor(boulderCursor));
+            boulderCursor.moveToNext();
+        }
+        boulderCursor.close();
+
+        for (Boulder boulder : boulders) {
+            boulderProblemsList.add(new BoulderProblems(
+                    boulder.getId(),
+                    photosMap.get(boulder.getId()),
+                    boulder.getBoulderName(),
+                    boulder.getBoulderNameRu(),
+                    getProblemsByBoulderId(db, boulder.getId())));
+        }
+
+        // TODO: разобраться с открытием и закрытием БД
+        if (db.isOpen()) {
+            db.close();
         }
         sectorBouldersAdapter = new SectorBouldersAdapter(boulderProblemsList);
-        sectorLayoutBouldersRecycleView.setHasFixedSize(true);
-        final LinearLayoutManager layoutManager = new org.solovyev.android.views.llm.LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        sectorLayoutBouldersRecycleView.addItemDecoration(new DividerItemDecoration(this, null));
-        sectorLayoutBouldersRecycleView.setLayoutManager(layoutManager);
-        sectorLayoutBouldersRecycleView.setAdapter(sectorBouldersAdapter);
 
         // название сектора
         final String sectorLabel = LEFT_QUOTES + labelSectorName + RIGHT_QUOTES;
@@ -169,6 +186,20 @@ public class SectorActivity extends AppCompatActivity implements BoulderProblems
         // описание сектора
         description.setText(sectorDescription);
         Log.d(TAG, "loadData() done");
+    }
+
+    private List<Problem> getProblemsByBoulderId(SQLiteDatabase db, int boulderId) {
+        Log.d(TAG, "getProblemsByBoulderId() start");
+        final List<Problem> result = new ArrayList<>();
+        final Cursor problemCursor = db.rawQuery("select * from PROBLEMS where boulder_id = ?", new String[]{boulderId + ""});
+        problemCursor.moveToFirst();
+        while (!problemCursor.isAfterLast()) {
+            result.add(PojosKt.getNewProblemFromCursor(problemCursor));
+            problemCursor.moveToNext();
+        }
+        problemCursor.close();
+        Log.d(TAG, "getProblemsByBoulderId() done");
+        return result;
     }
 
     private void initListeners() {
@@ -220,18 +251,13 @@ public class SectorActivity extends AppCompatActivity implements BoulderProblems
         Log.d(TAG, "initListeners() done");
     }
 
-    @Override
-    public void callback(List<BoulderProblems> boulderProblemsList, byte[] sectorPhoto) {
-        // список камней и проблем после загрузки из БД
-        sectorBouldersAdapter = new SectorBouldersAdapter(boulderProblemsList);
+    private void initListAdapter() {
+        Log.d(TAG, "initListAdapter() start");
         sectorLayoutBouldersRecycleView.setHasFixedSize(true);
         final LinearLayoutManager layoutManager = new org.solovyev.android.views.llm.LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         sectorLayoutBouldersRecycleView.addItemDecoration(new DividerItemDecoration(this, null));
         sectorLayoutBouldersRecycleView.setLayoutManager(layoutManager);
         sectorLayoutBouldersRecycleView.setAdapter(sectorBouldersAdapter);
-
-        // фотография сектора
-        final Bitmap bitmap = BitmapFactory.decodeByteArray(sectorPhoto, 0, sectorPhoto.length);
-        this.sectorPhoto.setImageBitmap(bitmap);
+        Log.d(TAG, "initListAdapter() done");
     }
 }

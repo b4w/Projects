@@ -1,25 +1,20 @@
 package com.triangularlake.constantine.triangularlake.adapters;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.j256.ormlite.stmt.UpdateBuilder;
 import com.triangularlake.constantine.triangularlake.R;
-import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
-import com.triangularlake.constantine.triangularlake.data.dto.Problem;
-import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
-import com.triangularlake.constantine.triangularlake.pojo.FavouriteProblemDTO;
-import com.triangularlake.constantine.triangularlake.pojo.FavouriteProblemsCache;
+import com.triangularlake.constantine.triangularlake.data.helpers.SQLiteHelper;
+import com.triangularlake.constantine.triangularlake.data.pojo.Problem;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,14 +22,8 @@ import java.util.Locale;
 public class FavouriteProblemsAdapter extends RecyclerView.Adapter<FavouriteProblemsAdapter.ViewHolder> {
 
     private final static String TAG = FavouriteProblemsAdapter.class.getSimpleName();
-    private final static int PROBLEM_IS_FAVOURITE = 1;
 
     private List<Problem> problems;
-
-    // TODO: тестовый метод DELETE!!!
-    public void setProblems(List<Problem> problems) {
-        this.problems = problems;
-    }
 
     public FavouriteProblemsAdapter(List<Problem> problems) {
         this.problems = problems;
@@ -59,7 +48,7 @@ public class FavouriteProblemsAdapter extends RecyclerView.Adapter<FavouriteProb
         holder.grade.setText(problem.getProblemGrade());
 
         // добавление проблемы в избранное
-        if (problem.getFavourite() == PROBLEM_IS_FAVOURITE) {
+        if (problem.getFavourite()) {
             holder.favourite.setImageResource(R.drawable.filter_route_square_blue_transparent);
         } else {
             holder.favourite.setImageResource(R.drawable.filter_route_square_grey_transparent);
@@ -67,7 +56,7 @@ public class FavouriteProblemsAdapter extends RecyclerView.Adapter<FavouriteProb
         holder.favourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (problem.getFavourite() == PROBLEM_IS_FAVOURITE) {
+                if (problem.getFavourite()) {
                     // удаление проблемы из избранного
                     holder.favourite.setImageResource(R.drawable.filter_route_square_grey_transparent);
                     addRemoveFavouriteProblem(view.getContext(), problem.getId(), 0);
@@ -109,18 +98,10 @@ public class FavouriteProblemsAdapter extends RecyclerView.Adapter<FavouriteProb
 
     // TODO: т.к. есть 2 одинаковых метода, то вынести в Abstract или static???
     private void addRemoveFavouriteProblem(final Context context, Integer problemId, int isAdded) {
-        final CommonDao commonDao;
-        try {
-            commonDao = OrmConnect.INSTANCE.getDBConnect(context).getDaoByClass(Problem.class);
-            if (commonDao != null) {
-                @SuppressWarnings("unchecked")
-                final UpdateBuilder<Problem, Integer> updateBuilder = commonDao.updateBuilder();
-                updateBuilder.where().eq(ICommonDtoConstants.ID, problemId);
-                updateBuilder.updateColumnValue(ICommonDtoConstants.FAVOURITE, isAdded);
-                updateBuilder.update();
-            }
-        } catch (SQLException e) {
-            Log.e("BoulderProblemsAdapter", "AddRemoveFavouriteProblem() Error! " + e.getMessage());
-        }
+        final SQLiteDatabase db = new SQLiteHelper(context).getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("favourite", isAdded);
+        db.update("PROBLEMS", contentValues, "_id = ?", new String[]{problemId + ""});
+        db.close();
     }
 }

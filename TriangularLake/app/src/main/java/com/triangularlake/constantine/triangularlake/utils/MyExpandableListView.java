@@ -19,11 +19,8 @@ public class MyExpandableListView extends ExpandableListView {
         if (getCount() != old_count) {
             old_count = getCount();
             params = getLayoutParams();
-
-            old_count = getCount();
-            params = getLayoutParams();
             params.height = getCount() * (old_count > 0 ? getChildAt(0).getHeight() : 0);
-//            params.height = getCount() * 50;
+//            params.height = getCount() * 150;
             setLayoutParams(params);
         }
         super.onDraw(canvas);

@@ -9,9 +9,11 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.triangularlake.constantine.triangularlake.R;
-import com.triangularlake.constantine.triangularlake.data.dto.Problem;
+import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
+import com.triangularlake.constantine.triangularlake.data.pojo.Problem;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ProblemsExpListAdapter extends BaseExpandableListAdapter {
 
@@ -74,7 +76,6 @@ public class ProblemsExpListAdapter extends BaseExpandableListAdapter {
     }
 
     /**
-     *
      * @param groupPosition
      * @return
      */
@@ -95,6 +96,7 @@ public class ProblemsExpListAdapter extends BaseExpandableListAdapter {
 
     /**
      * Показываем "родителя" группы.
+     *
      * @param groupPosition
      * @param isExpanded
      * @param convertView
@@ -107,27 +109,33 @@ public class ProblemsExpListAdapter extends BaseExpandableListAdapter {
             convertView = layoutInflater.inflate(R.layout.problems_parent_list_layout, parent, false);
         }
 
-        if (isExpanded){
+        if (isExpanded) {
+            // TODO: Показать на изображении линии выбранной проблемы
             //Изменяем что-нибудь, если текущая Group раскрыта
-        }
-        else{
+        } else {
+            // TODO: Скрыть на изображении линии выбранной проблемы
             //Изменяем что-нибудь, если текущая Group скрыта
         }
 
-        TextView problemName = (TextView) convertView.findViewById(R.id.problems_parent_ll_problem_name);
-        TextView problemGrade = (TextView) convertView.findViewById(R.id.problems_parent_ll_problem_grade);
+        final TextView problemName = (TextView) convertView.findViewById(R.id.problems_parent_ll_problem_name);
+        final TextView problemGrade = (TextView) convertView.findViewById(R.id.problems_parent_ll_problem_grade);
 
-        final Problem problem = (Problem)getChild(groupPosition, 0);
+        final Problem problem = (Problem) getChild(groupPosition, 0);
 
-        //TODO: Добавить поддержку локали
-        problemName.setText(problem.getProblemName());
+        if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
+            problemName.setText(problem.getProblemName());
+        } else if (Locale.getDefault().getLanguage().equals(ICommonDtoConstants.RU)) {
+            problemName.setText(problem.getProblemNameRu());
+        } else {
+            problemName.setText(problem.getProblemName());
+        }
         problemGrade.setText(problem.getProblemGrade());
-
         return convertView;
     }
 
     /**
      * Показываем "ребенка" выбранной группы.
+     *
      * @param groupPosition
      * @param childPosition
      * @param isLastChild
@@ -167,6 +175,8 @@ public class ProblemsExpListAdapter extends BaseExpandableListAdapter {
 
         return convertView;
     }
+
+
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {

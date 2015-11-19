@@ -2,6 +2,8 @@ package com.triangularlake.constantine.triangularlake.activities;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -20,8 +22,13 @@ import android.widget.Toast;
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.SectorsAdapter;
 import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstants;
-import com.triangularlake.constantine.triangularlake.pojo.SectorsCache;
+import com.triangularlake.constantine.triangularlake.data.helpers.SQLiteHelper;
+import com.triangularlake.constantine.triangularlake.data.pojo.PojosKt;
+import com.triangularlake.constantine.triangularlake.data.pojo.Sector;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SectorsActivity extends AppCompatActivity {
 
@@ -30,7 +37,7 @@ public class SectorsActivity extends AppCompatActivity {
     private RecyclerView sectorsLayoutRecyclerView;
     private Toolbar toolbar;
 
-    private long regionId;
+    private int regionId;
     private String sectorName;
 
     private Button buttonMap;
@@ -52,6 +59,7 @@ public class SectorsActivity extends AppCompatActivity {
         initToolbar();
         initXmlFields();
         initListeners();
+        loadData();
         initListAdapter();
     }
 
@@ -63,6 +71,27 @@ public class SectorsActivity extends AppCompatActivity {
         } else {
             overridePendingTransition(R.anim.right_out, R.anim.left_in);
         }
+    }
+
+    private void loadData() {
+        Log.d(TAG, "loadData() start");
+        final SQLiteDatabase db = new SQLiteHelper(getApplicationContext()).getReadableDatabase();
+        final Cursor cursor = db.rawQuery("select * from SECTORS where region_id = ?", new String[]{regionId + ""});
+        final List<Sector> sectors = new ArrayList<>();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            sectors.add(PojosKt.getNewSectorFromCursor(cursor));
+            cursor.moveToNext();
+        }
+        sectorsAdapter = new SectorsAdapter(sectors, sectorsAdapterCallback);
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        // TODO: разобраться с открытием и закрытием БД
+        if (db.isOpen()) {
+            db.close();
+        }
+        Log.d(TAG, "loadData() done");
     }
 
     /**
@@ -90,7 +119,7 @@ public class SectorsActivity extends AppCompatActivity {
      */
     private void initInputValues() {
         Log.d(TAG, "initInputValues() start");
-        regionId = getIntent().getExtras().getLong(IStringConstants.REGION_ID);
+        regionId = getIntent().getExtras().getInt(IStringConstants.REGION_ID);
         sectorName = getIntent().getExtras().getString(IStringConstants.SECTOR_NAME);
         Log.d(TAG, "initInputValues() done");
     }
@@ -120,7 +149,7 @@ public class SectorsActivity extends AppCompatActivity {
         Log.d(TAG, "initListeners() start");
         sectorsAdapterCallback = new SectorsAdapter.ISectorsAdapterCallback() {
             @Override
-            public void openChosenSector(String sectorName, String sectorDescription, long sectorId) {
+            public void openChosenSector(String sectorName, String sectorDescription, int sectorId) {
                 Intent intent = new Intent(getApplicationContext(), SectorActivity.class);
                 intent.putExtra(ICommonDtoConstants.SECTOR_ID, sectorId);
                 intent.putExtra(ICommonDtoConstants.SECTOR_NAME, sectorName);
@@ -219,11 +248,7 @@ public class SectorsActivity extends AppCompatActivity {
 
     private void initListAdapter() {
         Log.d(TAG, "initListAdapter() start");
-        if (regionId == 1) {
-            sectorsAdapter = new SectorsAdapter(SectorsCache.getInstance().getLietlahtiSectors(), sectorsAdapterCallback);
-        } else if (regionId == 2) {
-            sectorsAdapter = new SectorsAdapter(SectorsCache.getInstance().getTriangularSectors(), sectorsAdapterCallback);
-        }
+        // TODO: Что бы не делать поля класса (экономия памяти), может стоит перенести этот метод после взятия даннныз из БД?
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         sectorsLayoutRecyclerView.setLayoutManager(linearLayoutManager);
         sectorsLayoutRecyclerView.setAdapter(sectorsAdapter);

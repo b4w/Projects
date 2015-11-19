@@ -13,20 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
 import com.triangularlake.constantine.triangularlake.R;
 import com.triangularlake.constantine.triangularlake.adapters.FavouriteProblemsAdapter;
-import com.triangularlake.constantine.triangularlake.data.common.CommonDao;
-import com.triangularlake.constantine.triangularlake.data.dto.Problem;
-import com.triangularlake.constantine.triangularlake.data.dto.Sector;
-import com.triangularlake.constantine.triangularlake.data.helpers.OrmConnect;
-import com.triangularlake.constantine.triangularlake.pojo.FavouriteProblemsCache;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class SearchFragment extends Fragment {
     private static final String TAG = SearchFragment.class.getSimpleName();
@@ -66,16 +54,16 @@ public class SearchFragment extends Fragment {
 
     private void loadData() {
         Log.d(TAG, "loadData() start");
-        try {
-            final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
-            @SuppressWarnings("unchecked")
-            final List<Problem> problems = commonDao.queryForAll();
-            if (problems != null) {
-                favouriteProblemsAdapter = new FavouriteProblemsAdapter(problems);
-            }
-        } catch (SQLException e) {
-
-        }
+//        try {
+//            final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
+//            @SuppressWarnings("unchecked")
+//            final List<Problem> problems = commonDao.queryForAll();
+//            if (problems != null) {
+//                favouriteProblemsAdapter = new FavouriteProblemsAdapter(problems);
+//            }
+//        } catch (SQLException e) {
+//
+//        }
         Log.d(TAG, "loadData() done");
     }
 
@@ -99,29 +87,29 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                try {
-                    final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
-                    if (commonDao != null) {
-                        String searchField = charSequence.toString();
-                        // TODO: Ошибка по SIDES! =(((
-                        @SuppressWarnings("unchecked")
-                        final QueryBuilder<Problem, Long> qb = commonDao.queryBuilder();
-                        if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
-                            qb.where().like(PROBLEM_NAME, '%' + searchField + '%');
-                        } else if (Locale.getDefault().getLanguage().equals(RU)) {
-                            qb.where().like(PROBLEM_NAME_RU, '%' + searchField + '%');
-                        } else {
-                            qb.where().like(PROBLEM_NAME, '%' + searchField + '%');
-                        }
-                        final PreparedQuery<Problem> pq = qb.prepare();
-                        @SuppressWarnings("unchecked")
-                        List<Problem> problems = commonDao.query(pq);
-                        favouriteProblemsAdapter.setProblems(problems);
-                        favouriteProblemsAdapter.notifyDataSetChanged();
-                    }
-                } catch (SQLException e) {
-                    Log.e("FavouriteProblemsCache!", "FavouriteProblemsCache doInBackground() Error! " + e.getMessage());
-                }
+//                try {
+//                    final CommonDao commonDao = OrmConnect.INSTANCE.getDBConnect(getActivity()).getDaoByClass(Problem.class);
+//                    if (commonDao != null) {
+//                        String searchField = charSequence.toString();
+//                        // TODO: Ошибка по SIDES! =(((
+//                        @SuppressWarnings("unchecked")
+//                        final QueryBuilder<Problem, Long> qb = commonDao.queryBuilder();
+//                        if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
+//                            qb.where().like(PROBLEM_NAME, '%' + searchField + '%');
+//                        } else if (Locale.getDefault().getLanguage().equals(RU)) {
+//                            qb.where().like(PROBLEM_NAME_RU, '%' + searchField + '%');
+//                        } else {
+//                            qb.where().like(PROBLEM_NAME, '%' + searchField + '%');
+//                        }
+//                        final PreparedQuery<Problem> pq = qb.prepare();
+//                        @SuppressWarnings("unchecked")
+//                        List<Problem> problems = commonDao.query(pq);
+//                        favouriteProblemsAdapter.setProblems(problems);
+//                        favouriteProblemsAdapter.notifyDataSetChanged();
+//                    }
+//                } catch (SQLException e) {
+//                    Log.e("FavouriteProblemsCache!", "FavouriteProblemsCache doInBackground() Error! " + e.getMessage());
+//                }
             }
 
             @Override

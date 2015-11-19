@@ -10,7 +10,6 @@
         android:id="@+id/problems_children_ll_danger"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:textSize="20sp"
         android:text="@string/danger"
         android:textColor="@color/text_main"/>
 
@@ -18,7 +17,6 @@
         android:id="@+id/problems_children_ll_insurance"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:textSize="20sp"
         android:text="@string/insurance"
         android:textColor="@color/text_main"/>
 
@@ -26,7 +24,6 @@
         android:id="@+id/problems_children_ll_addition"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:textSize="20sp"
         android:text="@string/addition"
         android:textColor="@color/text_main"/>
 
