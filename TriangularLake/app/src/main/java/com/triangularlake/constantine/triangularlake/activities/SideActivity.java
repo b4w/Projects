@@ -1,5 +1,6 @@
 package com.triangularlake.constantine.triangularlake.activities;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -26,6 +27,7 @@ import com.triangularlake.constantine.triangularlake.data.dto.ICommonDtoConstant
 import com.triangularlake.constantine.triangularlake.data.helpers.SQLiteHelper;
 import com.triangularlake.constantine.triangularlake.data.pojo.PojosKt;
 import com.triangularlake.constantine.triangularlake.data.pojo.Problem;
+import com.triangularlake.constantine.triangularlake.fragments.SideFooterFragment;
 import com.triangularlake.constantine.triangularlake.utils.IStringConstants;
 
 import java.util.ArrayList;
@@ -58,6 +60,7 @@ public class SideActivity extends AppCompatActivity {
         initInputValues();
         initXmlFields();
         initToolbar();
+        initTestFragment();
         loadData();
         initListeners();
     }
@@ -98,6 +101,14 @@ public class SideActivity extends AppCompatActivity {
             });
         }
         Log.d(TAG, "initToolbar() done");
+    }
+
+    private void initTestFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        SideFooterFragment sideFooterFragment = SideFooterFragment.newInstance();
+        fragmentManager.beginTransaction()
+                .replace(R.id.side_layout_footer, sideFooterFragment, SideFooterFragment.class.getSimpleName())
+                .commit();
     }
 
     private void loadData() {
